@@ -24,6 +24,7 @@ const ACCOUNT_COOLDOWN_FILE = path.join(DATA_DIR, 'account-cooldown.json');
 const COMMENT_STAY_MS = 35000;
 const REEL_MIN_GAP_MS = 5 * 60 * 1000; // 5 minutes minimum between comments on the SAME reel
 const ACCOUNT_REST_MS = 5 * 60 * 1000; // fallback rest cooldown
+const inFlightAccounts = new Set(); // tracks accounts currently in an active browser session
 
 for (const dir of [ACCOUNTS_DIR, DATA_DIR, PRIVATE_DIR, path.join(ROOT, 'artifacts')]) {
   fs.mkdirSync(dir, { recursive: true });
@@ -528,13 +529,42 @@ async function runJob(job) {
         }
       }
 
+      // Concurrency guard: if this account is currently running in another browser, wait or switch
+      if (inFlightAccounts.has(item.account)) {
+        if (job.accountMode === 'auto') {
+          const blocked = usedAccountsForTarget(targetKey);
+          for (const a of inFlightAccounts) blocked.add(a);
+          const candidates = getRotatedReadyAccounts(blocked);
+          const freeCandidate = candidates.find((acc) => getAccountRemainingCooldown(acc) === 0) || candidates[0];
+          if (freeCandidate && !inFlightAccounts.has(freeCandidate)) {
+            console.log(`[CONCURRENCY] Account @${item.account} busy in another task. Switching to free account @${freeCandidate}`);
+            item.account = freeCandidate;
+            persistJobs();
+          } else {
+            while (inFlightAccounts.has(item.account)) {
+              await sleep(1500);
+            }
+          }
+        } else {
+          while (inFlightAccounts.has(item.account)) {
+            await sleep(1500);
+          }
+        }
+      }
+
       job.status = 'running';
       item.status = 'running';
       item.startedAt = new Date().toISOString();
       item.error = null;
       persistJobs();
 
-      let outcome = await spawnComment(item.account, targetUrl, item.comment);
+      inFlightAccounts.add(item.account);
+      let outcome;
+      try {
+        outcome = await spawnComment(item.account, targetUrl, item.comment);
+      } finally {
+        inFlightAccounts.delete(item.account);
+      }
       Object.assign(item, outcome, { finishedAt: new Date().toISOString() });
 
       if (outcome.ok === true || ['uncertain', 'uncertain_after_restart'].includes(outcome.status)) {
@@ -551,13 +581,20 @@ async function runJob(job) {
             if (job.items[k].account) blocked.add(job.items[k].account);
           }
           const candidates = getRotatedReadyAccounts(blocked);
-          const replacement = candidates.find((acc) => getAccountRemainingCooldown(acc) === 0) || candidates[0];
+          const replacement = candidates.find((acc) => getAccountRemainingCooldown(acc) === 0 && !inFlightAccounts.has(acc)) || candidates[0];
           if (replacement) {
             console.log(`[AUTO_FAILOVER] Retrying comment with active account @${replacement}...`);
             item.account = replacement;
             item.status = 'running';
             persistJobs();
-            const retryOutcome = await spawnComment(item.account, targetUrl, item.comment);
+
+            inFlightAccounts.add(item.account);
+            let retryOutcome;
+            try {
+              retryOutcome = await spawnComment(item.account, targetUrl, item.comment);
+            } finally {
+              inFlightAccounts.delete(item.account);
+            }
             Object.assign(item, retryOutcome, { finishedAt: new Date().toISOString() });
             if (retryOutcome.ok === true || ['uncertain', 'uncertain_after_restart'].includes(retryOutcome.status)) {
               markAccountUsed(targetKey, item.account, { status: retryOutcome.status, jobId: job.id });
@@ -633,7 +670,10 @@ function createCommentJob(body) {
         available = getRotatedReadyAccounts(blocked, new Set());
       }
       if (!available.length) {
-        throw new Error(`Line ${i + 1} (${target.shortcode}): No ready account available that hasn't already commented on this post.`);
+        const ready = listAccounts().filter((a) => a.healthy);
+        if (!ready.length) throw new Error('No ready accounts available.');
+        available = ready.map((a) => a.username);
+        available.sort((a, b) => (accountUsage[a] || 0) - (accountUsage[b] || 0));
       }
 
       const assignedAccount = available[0];
@@ -699,12 +739,22 @@ function createCommentJob(body) {
   } else {
     // Fair round-robin rotation: least recently used accounts first!
     candidates = getRotatedReadyAccounts(blocked);
-    if (candidates.length < comments.length) {
-      throw new Error(`Need ${comments.length} unused ready account(s) for this reel/post, but only ${candidates.length} are available.`);
+    if (!candidates.length) {
+      // If all healthy accounts have already commented on this post, allow recycling ready accounts
+      candidates = ready.map((a) => a.username);
+      candidates.sort((a, b) => (accountUsage[a] || 0) - (accountUsage[b] || 0));
+    }
+    if (!candidates.length) {
+      throw new Error('No ready accounts available.');
     }
   }
 
-  const assigned = candidates.slice(0, comments.length);
+  // Cycle assignment: if comments.length > candidates.length, wrap around!
+  // e.g. 40 comments with 30 accounts -> uses all 30 accounts, then wraps around to the first 10 accounts!
+  const assigned = [];
+  for (let i = 0; i < comments.length; i++) {
+    assigned.push(candidates[i % candidates.length]);
+  }
 
   const id = `comment_${Date.now()}_${++jobCounter}`;
   const createdAt = new Date().toISOString();

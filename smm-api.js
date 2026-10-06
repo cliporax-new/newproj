@@ -42,9 +42,8 @@ function defaultConfig() {
     apiKey: crypto.randomBytes(24).toString('hex'),
     host: '0.0.0.0',
     port: 4620,
-    // How many SMM orders may run at the same time (each running order = 1 browser at a time).
-    // Keep low on a small RDP/VPS: 1-2 for 4 GB RAM, 3-4 for 8 GB RAM.
-    maxConcurrentOrders: 2,
+    // How many SMM orders may run at the same time (up to 30 parallel orders for 30 different links)
+    maxConcurrentOrders: 30,
     currency: 'USD',
     balance: '100000.00',
     services: [
@@ -68,6 +67,7 @@ function loadConfig() {
   const saved = readJson(CONFIG_FILE, null);
   if (saved && saved.apiKey) {
     const merged = { ...defaultConfig(), ...saved };
+    if (!merged.maxConcurrentOrders || merged.maxConcurrentOrders < 30) merged.maxConcurrentOrders = 30;
     if (!Array.isArray(merged.services) || !merged.services.length) merged.services = defaultConfig().services;
     for (const s of merged.services) {
       if (s.service === 1) {
@@ -241,7 +241,7 @@ function start(deps) {
       const pending = Object.values(store.orders)
         .filter((o) => o.state === 'pending' && (!o.nextTryAt || o.nextTryAt <= now))
         .sort((a, b) => a.id - b.id)
-        .slice(0, 5);
+        .slice(0, 30);
       for (const order of pending) {
         if (free <= 0) break;
         startOrder(order);
