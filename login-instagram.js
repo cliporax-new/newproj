@@ -60,6 +60,38 @@ const MAX_WAIT_MS = 15 * 60 * 1000; // 15 minutes
     if (hasSession && hasUser) {
       await page.waitForTimeout(2000);
       await context.storageState({ path: authFile, indexedDB: true });
+
+      // Automatically fetch and record real proxy IP, location, and ISP details
+      try {
+        const ipPage = await context.newPage();
+        const ipRes = await ipPage.goto('http://ip-api.com/json', { timeout: 10000 });
+        if (ipRes && ipRes.ok()) {
+          const bodyText = await ipPage.textContent('body');
+          const data = JSON.parse(bodyText || '{}');
+          if (data && data.status === 'success') {
+            const ipFile = path.join(path.dirname(accountsDir), 'data', 'account-ips.json');
+            let currentIps = {};
+            try { currentIps = JSON.parse(fs.readFileSync(ipFile, 'utf8')); } catch {}
+            currentIps[username] = {
+              ip: data.query,
+              country: data.country || 'India',
+              countryCode: data.countryCode || 'IN',
+              region: data.regionName || data.region,
+              city: data.city,
+              postal: data.zip,
+              flag: '🇮🇳',
+              isp: data.isp || 'Reliance Jio Infocomm Limited',
+              org: data.org || data.isp,
+              timezone: data.timezone || 'Asia/Kolkata',
+              checkedAt: new Date().toISOString(),
+            };
+            fs.mkdirSync(path.dirname(ipFile), { recursive: true });
+            fs.writeFileSync(ipFile, JSON.stringify(currentIps, null, 2), 'utf8');
+          }
+        }
+        await ipPage.close().catch(() => {});
+      } catch {}
+
       await page.waitForTimeout(1000);
       await browser.close().catch(() => {});
       process.exit(0);
