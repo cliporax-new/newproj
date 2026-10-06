@@ -1,7 +1,8 @@
 @echo off
 title Instagram Comments Automation
-color 0A
 cd /d "%~dp0"
+if exist "%ProgramFiles%\nodejs" set "PATH=%ProgramFiles%\nodejs;%PATH%"
+
 echo.
 echo   ============================================
 echo     Instagram Comments Automation
@@ -13,7 +14,7 @@ call node updater.js
 echo   [2/3] Checking Playwright browser...
 where npx >nul 2>&1
 if %errorlevel% equ 0 (
-    if not exist "%LOCALAPPDATA%\ms-playwright" (
+    if not exist "%LOCALAPPDATA%\ms-playwright\chromium*" (
         echo   Installing Chromium browser for Playwright (first run only)...
         call npx playwright install chromium
     )
