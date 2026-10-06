@@ -12,7 +12,7 @@ AppId={{D37F29E1-8419-4C59-A8F2-72E5D4B2A014}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
-DefaultDirName={autopf}\Instagram Comments Automation
+DefaultDirName={localappdata}\Instagram Comments Automation
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=C:\Users\theab\OneDrive\Desktop
@@ -29,9 +29,15 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
+[Dirs]
+Name: "{app}"; Permissions: users-full
+Name: "{app}\data"; Permissions: users-full
+Name: "{app}\accounts_instagram"; Permissions: users-full
+Name: "{app}\suspended_accounts"; Permissions: users-full
+
 [Files]
 ; All core application files and scripts
-Source: "{#SourceAppDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "node_modules\*,artifacts\*,install-log.txt,*.tmp"
+Source: "{#SourceAppDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "node_modules\*,artifacts\*,install-log.txt,*.tmp"; Permissions: users-full
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"
