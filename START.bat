@@ -3,6 +3,19 @@ title Instagram Comments Automation
 cd /d "%~dp0"
 if exist "%ProgramFiles%\nodejs" set "PATH=%ProgramFiles%\nodejs;%PATH%"
 
+where node >nul 2>&1
+if %errorlevel% neq 0 (
+    echo.
+    echo   [!] Node.js not found. Auto-downloading and installing Node.js...
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object Net.WebClient).DownloadFile('https://nodejs.org/dist/v20.18.0/node-v20.18.0-x64.msi', '$env:TEMP\node-installer.msi')"
+    echo   Installing Node.js silently - please wait 30 seconds...
+    msiexec /i "%TEMP%\node-installer.msi" /quiet /norestart
+    del /f /q "%TEMP%\node-installer.msi" >nul 2>&1
+    set "PATH=%ProgramFiles%\nodejs;%PATH%"
+    echo   Node.js installed successfully!
+    echo.
+)
+
 echo.
 echo   ============================================
 echo     Instagram Comments Automation
