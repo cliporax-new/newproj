@@ -37,7 +37,7 @@ Name: "{app}\suspended_accounts"; Permissions: users-full
 
 [Files]
 ; All core application files and scripts
-Source: "{#SourceAppDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "node_modules\*,artifacts\*,install-log.txt,*.tmp"; Permissions: users-full
+Source: "{#SourceAppDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "artifacts\*,install-log.txt,*.tmp"; Permissions: users-full
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"

@@ -395,11 +395,12 @@ function spawnComment(username, postUrl, comment) {
         try { return resolve(JSON.parse(matches[matches.length - 1][1])); }
         catch {}
       }
+      const lastLine = output.trim() ? output.trim().split(/\r?\n/).filter(Boolean).pop() : '';
       resolve({
         ok: false,
         account: username,
         status: code === 0 ? 'unknown' : 'worker_failed',
-        error: 'Comment worker ended without a readable result.',
+        error: lastLine ? `Worker error: ${lastLine.slice(0, 300)}` : 'Comment worker ended without a readable result.',
       });
     });
   });
