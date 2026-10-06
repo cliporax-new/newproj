@@ -19,8 +19,11 @@ const COMMENT_WORKER = path.join(ROOT, 'comment-worker.js');
 const JOBS_FILE = path.join(DATA_DIR, 'comment-jobs.json');
 const HISTORY_FILE = path.join(DATA_DIR, 'comment-history.json');
 const USAGE_FILE = path.join(DATA_DIR, 'account-usage.json');
+const TARGET_COOLDOWN_FILE = path.join(DATA_DIR, 'target-cooldown.json');
+const ACCOUNT_COOLDOWN_FILE = path.join(DATA_DIR, 'account-cooldown.json');
 const COMMENT_STAY_MS = 35000;
-const ACCOUNT_REST_MS = 5 * 60 * 1000; // 5 minutes rest cooldown per account
+const REEL_MIN_GAP_MS = 5 * 60 * 1000; // 5 minutes minimum between comments on the SAME reel
+const ACCOUNT_REST_MS = 5 * 60 * 1000; // fallback rest cooldown
 
 for (const dir of [ACCOUNTS_DIR, DATA_DIR, PRIVATE_DIR, path.join(ROOT, 'artifacts')]) {
   fs.mkdirSync(dir, { recursive: true });
@@ -213,12 +216,42 @@ function listAccounts() {
   return list.sort((a, b) => a.username.localeCompare(b.username));
 }
 
-// ─── Account Usage & Fair Rotation ───
+// ─── Account Usage, Fair Rotation & Cooldown Guards ───
 let accountUsage = readJsonFile(USAGE_FILE, {});
+let accountCooldown = readJsonFile(ACCOUNT_COOLDOWN_FILE, {});
+let targetCooldown = readJsonFile(TARGET_COOLDOWN_FILE, {});
 
 function recordAccountUsage(username) {
-  accountUsage[username] = Date.now();
+  const now = Date.now();
+  accountUsage[username] = now;
   writeJsonAtomic(USAGE_FILE, accountUsage);
+
+  // Random 4 to 10 minutes cooldown per account (zero ban / human-like safety)
+  const randomMinutes = 4 + Math.random() * 6; // between 4.0 and 10.0 minutes
+  const cooldownMs = Math.round(randomMinutes * 60 * 1000);
+  accountCooldown[username] = now + cooldownMs;
+  writeJsonAtomic(ACCOUNT_COOLDOWN_FILE, accountCooldown);
+  console.log(`[COOLDOWN] Account @${username} resting for ${randomMinutes.toFixed(1)} minutes.`);
+}
+
+function getAccountRemainingCooldown(username) {
+  const until = accountCooldown[username] || 0;
+  if (!until) return 0;
+  return Math.max(0, until - Date.now());
+}
+
+function recordTargetCommentTime(targetKey) {
+  if (!targetKey || targetKey === 'multi') return;
+  targetCooldown[targetKey] = Date.now();
+  writeJsonAtomic(TARGET_COOLDOWN_FILE, targetCooldown);
+}
+
+function getTargetRemainingCooldown(targetKey) {
+  if (!targetKey || targetKey === 'multi') return 0;
+  const lastTime = targetCooldown[targetKey] || 0;
+  if (!lastTime) return 0;
+  const elapsed = Date.now() - lastTime;
+  return Math.max(0, REEL_MIN_GAP_MS - elapsed);
 }
 
 function getRotatedReadyAccounts(blockedSet = new Set(), excludeAccounts = new Set()) {
@@ -227,7 +260,7 @@ function getRotatedReadyAccounts(blockedSet = new Set(), excludeAccounts = new S
     .map((a) => a.username)
     .filter((name) => !blockedSet.has(name) && !excludeAccounts.has(name));
 
-  // Sort ascending by lastUsed timestamp: least recently used accounts first (fair round-robin)
+  // Sort ascending: least recently used accounts first (fair round-robin)
   candidates.sort((a, b) => {
     const timeA = accountUsage[a] || 0;
     const timeB = accountUsage[b] || 0;
@@ -426,7 +459,8 @@ async function runJob(job) {
       if (i > 0) {
         if (!item.scheduledAt) {
           const previousBase = Date.parse(job.items[i - 1].postedAt || job.items[i - 1].finishedAt || '') || Date.now();
-          item.scheduledAt = new Date(previousBase + Math.round(item.gapMinutes * 60000)).toISOString();
+          const gapMin = Number(item.gapMinutes) >= 0 ? Number(item.gapMinutes) : 5;
+          item.scheduledAt = new Date(previousBase + Math.round(gapMin * 60000)).toISOString();
         }
         const waitMs = Date.parse(item.scheduledAt) - Date.now();
         if (waitMs > 0) {
@@ -437,28 +471,36 @@ async function runJob(job) {
         }
       }
 
-      // Safe Account Rest / Cooldown Guard (Zero Ban Protection)
-      const lastUsed = accountUsage[item.account] || 0;
-      if (lastUsed > 0) {
-        const elapsed = Date.now() - lastUsed;
-        if (elapsed < ACCOUNT_REST_MS) {
-          const targetKey = item.targetKey || job.targetKey;
-          const blocked = usedAccountsForTarget(targetKey);
-          const candidates = getRotatedReadyAccounts(blocked, new Set([item.account]));
-          const restedCandidate = candidates.find((acc) => (Date.now() - (accountUsage[acc] || 0)) >= ACCOUNT_REST_MS);
+      const targetUrl = item.postUrl || job.postUrl;
+      const targetKey = item.targetKey || job.targetKey;
 
-          if (restedCandidate && job.accountMode === 'auto') {
-            console.log(`[REST_GUARD] Account ${item.account} resting. Rotating to rested account ${restedCandidate}`);
-            item.account = restedCandidate;
-            persistJobs();
-          } else {
-            const restWaitMs = ACCOUNT_REST_MS - elapsed;
-            console.log(`[REST_GUARD] Account ${item.account} cooling down. Waiting ${Math.round(restWaitMs / 1000)}s...`);
-            item.status = 'waiting';
-            job.status = 'waiting';
-            persistJobs();
-            await sleep(restWaitMs);
-          }
+      // 1. Reel Guard: Enforce at least 5 minutes between comments on the SAME reel across all orders
+      const reelRemainingMs = getTargetRemainingCooldown(targetKey);
+      if (reelRemainingMs > 0) {
+        console.log(`[REEL_GUARD] Target ${targetKey} commented recently. Waiting ${Math.round(reelRemainingMs / 1000)}s for 5m reel gap...`);
+        item.status = 'waiting';
+        job.status = 'waiting';
+        persistJobs();
+        await sleep(reelRemainingMs);
+      }
+
+      // 2. Safe Account Rest / Random 4-10m Cooldown Guard (Zero Ban Protection)
+      const coolRemainingMs = getAccountRemainingCooldown(item.account);
+      if (coolRemainingMs > 0) {
+        const blocked = usedAccountsForTarget(targetKey);
+        const candidates = getRotatedReadyAccounts(blocked, new Set([item.account]));
+        const restedCandidate = candidates.find((acc) => getAccountRemainingCooldown(acc) === 0);
+
+        if (restedCandidate && job.accountMode === 'auto') {
+          console.log(`[REST_GUARD] Account @${item.account} cooling down. Rotating to rested account @${restedCandidate}`);
+          item.account = restedCandidate;
+          persistJobs();
+        } else {
+          console.log(`[REST_GUARD] Account @${item.account} cooling down. Waiting ${Math.round(coolRemainingMs / 1000)}s...`);
+          item.status = 'waiting';
+          job.status = 'waiting';
+          persistJobs();
+          await sleep(coolRemainingMs);
         }
       }
 
@@ -468,14 +510,13 @@ async function runJob(job) {
       item.error = null;
       persistJobs();
 
-      const targetUrl = item.postUrl || job.postUrl;
-      const targetKey = item.targetKey || job.targetKey;
       const outcome = await spawnComment(item.account, targetUrl, item.comment);
       Object.assign(item, outcome, { finishedAt: new Date().toISOString() });
 
       if (outcome.ok === true || ['uncertain', 'uncertain_after_restart'].includes(outcome.status)) {
         markAccountUsed(targetKey, item.account, { status: outcome.status, jobId: job.id });
         recordAccountUsage(item.account);
+        recordTargetCommentTime(targetKey);
       } else if (['session_needs_attention', 'suspended', 'checkpoint', 'logged_out'].includes(outcome.status)) {
         handleAccountFailure(item.account, outcome.status, outcome.error);
       }
@@ -501,13 +542,13 @@ async function runJob(job) {
 
 function validateComments(raw) {
   if (!Array.isArray(raw) || !raw.length) throw new Error('Add at least one comment.');
-  if (raw.length > 50) throw new Error('A single job can contain up to 50 comments.');
+  if (raw.length > 100) throw new Error('A single job can contain up to 100 comments.');
   const comments = raw.map((item, index) => {
     const text = String(item && item.text || '').trim();
     if (!text) throw new Error(`Comment ${index + 1} is empty.`);
     if (text.length > 1000) throw new Error(`Comment ${index + 1} must be 1000 characters or fewer.`);
     let gapMinutes = index === 0 ? 0 : Number(item && item.gapMinutes);
-    if (!Number.isFinite(gapMinutes)) gapMinutes = 0;
+    if (!Number.isFinite(gapMinutes) || gapMinutes <= 0) gapMinutes = 5;
     if (gapMinutes < 0 || gapMinutes > 1440) throw new Error(`Comment ${index + 1} gap must be between 0 and 1440 minutes.`);
     return { text, gapMinutes: Math.round(gapMinutes * 100) / 100 };
   });
@@ -528,9 +569,9 @@ function createCommentJob(body) {
       .filter((l) => l.url && l.comment);
 
     if (!lines.length) throw new Error('Add at least one line with a valid Instagram URL and comment.');
-    if (lines.length > 50) throw new Error('A single queue can contain up to 50 lines.');
+    if (lines.length > 100) throw new Error('A single queue can contain up to 100 lines.');
 
-    const defaultGap = Number(body.gapMinutes) >= 0 ? Number(body.gapMinutes) : 1;
+    const defaultGap = Number(body.gapMinutes) >= 0 ? Number(body.gapMinutes) : 5;
     const items = [];
     const usedInThisQueue = [];
 

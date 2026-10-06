@@ -55,10 +55,10 @@ function defaultConfig() {
         category: 'Instagram Comments',
         rate: '50.00', // price per 1000
         min: 1,
-        max: 50,
+        max: 100,
         refill: false,
         cancel: true,
-        gapMinutes: 1, // delay between comments inside one order
+        gapMinutes: 5, // 5 minutes delay between comments on same reel
       },
     ],
   };
@@ -69,6 +69,12 @@ function loadConfig() {
   if (saved && saved.apiKey) {
     const merged = { ...defaultConfig(), ...saved };
     if (!Array.isArray(merged.services) || !merged.services.length) merged.services = defaultConfig().services;
+    for (const s of merged.services) {
+      if (s.service === 1) {
+        if (!s.max || s.max < 100) s.max = 100;
+        if (!s.gapMinutes || s.gapMinutes < 5) s.gapMinutes = 5;
+      }
+    }
     return merged;
   }
   const fresh = defaultConfig();
@@ -199,7 +205,7 @@ function start(deps) {
 
   function startOrder(order) {
     const service = serviceById(order.service) || {};
-    const gap = Number(service.gapMinutes) >= 0 ? Number(service.gapMinutes) : 1;
+    const gap = Number(service.gapMinutes) >= 0 ? Number(service.gapMinutes) : 5;
     try {
       const job = createCommentJob({
         postUrl: order.link,
