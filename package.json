@@ -1,0 +1,9 @@
+{
+  "name": "instagram-comments-automation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local Instagram comment dashboard with saved accounts and stable per-account proxies.",
+  "dependencies": {
+    "playwright": "^1.62.1"
+  }
+}

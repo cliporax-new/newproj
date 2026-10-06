@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Instagram Comments Automation</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">LOCAL DASHBOARD</div>
+      <h1>Instagram Comments Automation</h1>
+      <p>Manual account login with auto-assigned Indian mobile proxies, safe account rotation, and line-wise commenting.</p>
+    </div>
+    <div class="status-pill"><span class="dot"></span> localhost:4610</div>
+  </header>
+
+  <main class="shell">
+    <!-- SMM API Banner -->
+    <div id="smmBanner" style="background: linear-gradient(90deg, #1f274a, #161b33); border: 1px solid #3c4c82; border-radius: 10px; padding: 12px 18px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+      <div>
+        <div style="font-weight: 700; color: #8da4ff; font-size: 13px; margin-bottom: 3px;">⚡ SMM PANEL PROVIDER API (Port 4620)</div>
+        <div style="font-size: 13px; color: #cbd5e1;">
+          <strong>Endpoint:</strong> <code id="smmEndpointText" style="background: #0f1322; padding: 2px 7px; border-radius: 4px; color: #38bdf8;">Loading...</code>
+          <span style="margin: 0 8px; color: #64748b;">|</span>
+          <strong>API Key:</strong> <code id="smmKeyText" style="background: #0f1322; padding: 2px 7px; border-radius: 4px; color: #4ade80;">Loading...</code>
+        </div>
+      </div>
+      <button id="copySmmBtn" class="secondary" style="font-size: 12px; padding: 6px 12px; cursor: pointer;">📋 Copy SMM Info</button>
+    </div>
+
+    <!-- Accounts Panel -->
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Instagram accounts</h2>
+          <p>Each account gets its own dedicated Indian mobile IP (DataImpulse 4G/5G).</p>
+        </div>
+        <span id="accountCount" class="count">0</span>
+      </div>
+
+      <div class="add-row">
+        <input id="newUsername" autocomplete="off" placeholder="Enter Instagram username / label" />
+        <button id="loginBtn" class="primary">Open Login Window</button>
+      </div>
+      <div class="format-note">
+        🌐 <strong>Auto Dedicated Mobile Proxy:</strong> Every login window opens with an Indian mobile proxy (Reliance Jio / Airtel 4G/5G). Window stays open up to 10 minutes for OTP / 2FA / Captcha.
+      </div>
+
+      <div id="accounts" class="accounts"></div>
+    </section>
+
+    <!-- Comments Panel -->
+    <section class="panel comment-panel">
+      <div class="panel-head">
+        <div>
+          <h2>Post comments</h2>
+          <p>Safe account rotation, 5-minute cooldown guard, and 35-second post stay.</p>
+        </div>
+      </div>
+
+      <div class="tabs-bar">
+        <button id="tabSingle" type="button" class="tab-btn active">Single Reel Mode</button>
+        <button id="tabMulti" type="button" class="tab-btn">⚡ Line-Wise Multi-Link Mode</button>
+      </div>
+
+      <!-- Single Reel Mode -->
+      <div id="singleModeBox">
+        <label class="field-label" for="postUrl">Instagram reel / post URL</label>
+        <input id="postUrl" class="wide" placeholder="https://www.instagram.com/reel/.../" />
+        <div id="reelUsage" class="usage-note"></div>
+
+        <div class="comments-head">
+          <div>
+            <span class="field-label no-margin">Comments</span>
+            <small>Each row must be a different comment.</small>
+          </div>
+          <button id="addCommentBtn" type="button" class="secondary">+ Add comment</button>
+        </div>
+        <div id="commentsBuilder" class="comments-builder"></div>
+
+        <div class="stay-note">After a comment is submitted, browser stays on the reel for <strong>35 seconds</strong> before closing.</div>
+
+        <span class="field-label">Account allocation</span>
+        <div class="mode-grid">
+          <label class="mode-card">
+            <input type="radio" name="accountMode" value="auto" checked />
+            <span><strong>Auto assign (fair rotation)</strong><small>Least recently used accounts comment first.</small></span>
+          </label>
+          <label class="mode-card">
+            <input type="radio" name="accountMode" value="manual" />
+            <span><strong>Select accounts</strong><small>Choose specific accounts for this queue.</small></span>
+          </label>
+        </div>
+        <div id="accountNeed" class="account-need"></div>
+
+        <div id="manualAccounts" class="manual-accounts hidden">
+          <div class="select-head">
+            <span class="field-label">Accounts to use</span>
+            <button id="selectAllBtn" class="text-button">Select all available accounts</button>
+          </div>
+          <div id="accountPicker" class="account-picker empty">No ready accounts yet.</div>
+        </div>
+
+        <button id="postBtn" class="primary post-button">Start comment queue</button>
+      </div>
+
+      <!-- Line-Wise Multi-Link Mode -->
+      <div id="multiModeBox" class="hidden">
+        <label class="field-label" for="multiLinesInput">Paste links and comments (1 link + 1 comment per line)</label>
+        <textarea id="multiLinesInput" style="min-height: 160px; font-family: monospace; font-size: 13px;" placeholder="Paste line by line, e.g.:
+https://www.instagram.com/reel/CnyjuwFPeHl/ Nice reel bro!
+https://www.instagram.com/reel/DdmYOkuR1iq/ Loved this content!
+https://www.instagram.com/p/ABC12345/ Super video!"></textarea>
+
+        <div class="multi-gap-row">
+          <label for="multiGap"><strong>Delay between each post (minutes):</strong></label>
+          <input id="multiGap" type="number" min="0" value="1" style="max-width: 90px; text-align: center;" />
+        </div>
+
+        <div class="format-note">
+          🔄 <strong>Automatic Rotation:</strong> Line 1 gets posted by Account 1, Line 2 gets posted by Account 2, Line 3 gets posted by Account 3... Accounts rest 5 minutes between comments to prevent Instagram blocks!
+        </div>
+
+        <button id="multiPostBtn" class="primary post-button">Start Line-Wise Queue</button>
+      </div>
+
+      <!-- Job Status Box -->
+      <div id="jobBox" class="job-box hidden">
+        <div class="job-title-row">
+          <strong>Current job</strong>
+          <span id="jobStatus" class="badge">queued</span>
+        </div>
+        <div id="jobResults" class="job-results"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

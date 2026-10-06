@@ -1,0 +1,8 @@
+node_modules/
+accounts_instagram/*.json
+suspended_accounts/
+data/private/*.json
+data/*.json
+artifacts/
+install-log.txt
+*.tmp
