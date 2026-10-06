@@ -1,0 +1,208 @@
+{
+  "cookies": [
+    {
+      "name": "datr",
+      "value": "7C3Aan4cG-4U5yQXLBA2yvfP",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1825539564.952635,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ig_did",
+      "value": "486B6D5E-9A77-417B-9E30-277C41944AC0",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1822515564.952667,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "mid",
+      "value": "asAt7AAAAAEA8eB8aFj6c5kog4VI",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1825539566,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "csrftoken",
+      "value": "5rYkpqhKIccXHPNdimPnEysHWtWvP06g",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1825656047.83849,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ds_user_id",
+      "value": "24308135505",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1798872047.838951,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "dpr",
+      "value": "1.25",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1791700842,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "wd",
+      "value": "1536x826",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1791700842,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ps_l",
+      "value": "1",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1825549213.395282,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ps_n",
+      "value": "1",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1825549213.395455,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "sessionid",
+      "value": "24308135505%3A2nbNZo9zdX7wYF%3A19%3AAYlHh14L9A7BoGLdHD1rMMpC-jHFJop-Dpe_6BrdBw",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1822567030.743568,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "fr",
+      "value": "0qDxk6dr9RZv5vU11.AWfIrcZD6GS2hYdnd0uGRClTg990yn7EgIBc7t0viiEPcwKrO2g.BqwDVx..AAA.0.0.BqwfT0.AWefunQhlkH0i3rih9BMTfJSF0Y",
+      "domain": ".facebook.com",
+      "path": "/",
+      "expires": 1798872053.210341,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "rur",
+      "value": "VCN%2C17841424465158516%2C1792305651%3A01ff12d1dd336b5b93804e68dca4010b2e45143999088bd621e0b7d9cafd4352cf8065fa",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://www.instagram.com",
+      "localStorage": [
+        {
+          "name": "mutex_falco_queue_critical^$^#^#24308135505^#hmac_ttl.1791096019.AR2RKeX0P5wOLEhytxYg02_CNmXTfxmGu_cV2T31aj-k88i6^$",
+          "value": "r81hwm:1791096039774"
+        },
+        {
+          "name": "chatd-deviceid",
+          "value": "8f8ad13e-de67-49fa-8593-6be39e23461a"
+        },
+        {
+          "name": "IGSession",
+          "value": "00z7xz:1791097875807"
+        },
+        {
+          "name": "pigeon_state",
+          "value": "{\"lastDeviceInfoTime\":0}"
+        },
+        {
+          "name": "fr",
+          "value": "AVkrbYhcGg4hOQ7FQCY6x9My3xjzbN5-V7Fs2GKDLPvZCLRc73tbEJ50IhBusqGLR1mfaZOF_yONByOTTRXQHA0SiM_hSbu1mkyrmVVAMDLhh-QzG1JZ-MF7Ehj-YMc"
+        },
+        {
+          "name": "pixel_fire_ts",
+          "value": "1790981480587"
+        },
+        {
+          "name": "Session",
+          "value": "asrgpb:1791096110807"
+        },
+        {
+          "name": "banzai:last_storage_flush",
+          "value": "1791096040065.6"
+        },
+        {
+          "name": "map_waterfall_state",
+          "value": "6163e89f-34ec-4160-b98d-c2d99882f44f|"
+        },
+        {
+          "name": "mutex_falco_queue_log^$^#^#24308135505^#hmac_ttl.1791096019.AR2RKeX0P5wOLEhytxYg02_CNmXTfxmGu_cV2T31aj-k88i6^$",
+          "value": "r81hwm:1791096039773"
+        },
+        {
+          "name": "screen_time_period_logging_instagram",
+          "value": "{\"actorId\":\"17841424465158516\",\"currentIntervalLastTick\":1791096074,\"currentIntervalStart\":1791096039,\"initRemoteAgg\":null,\"intervals\":[{\"end\":1790979584,\"start\":1790979584},{\"end\":1790981512,\"start\":1790981477},{\"end\":1790989254,\"start\":1790989215},{\"end\":1791031061,\"start\":1791031026},{\"end\":1791035147,\"start\":1791035112},{\"end\":1791052955,\"start\":1791052920}],\"lastCallbackAttempt\":1791096039,\"localStorageId\":\"84467270\",\"syncedL24HS\":null,\"syncedTodayS\":null}"
+        },
+        {
+          "name": "hb_timestamp",
+          "value": "1791096073368"
+        },
+        {
+          "name": "signal_flush_timestamp",
+          "value": "1791096043483"
+        },
+        {
+          "name": "mutex_falco_queue_immediately^$^#^#24308135505^#hmac_ttl.1791096019.AR2RKeX0P5wOLEhytxYg02_CNmXTfxmGu_cV2T31aj-k88i6^$",
+          "value": "r81hwm:1791096039773"
+        }
+      ],
+      "indexedDB": []
+    },
+    {
+      "origin": "https://www.fbsbx.com",
+      "localStorage": [
+        {
+          "name": "_gcl_ls",
+          "value": "{\"schema\":\"gcl\",\"version\":1,\"gsid_dc\":{\"value\":{\"joinId\":\"Ld-CHS94kZPed9XhKjNxFKo0WAPJ-CTKjA\",\"lastJoinedTimeMs\":1790981488333},\"expires\":1790981788333},\"gcl_ctr\":{\"value\":{\"value\":0,\"timeouts\":0,\"errors\":0,\"eopCount\":0,\"creationTimeMs\":1790981488388},\"expires\":1798757488388}}"
+        }
+      ],
+      "indexedDB": []
+    },
+    {
+      "origin": "https://www.facebook.com",
+      "localStorage": [
+        {
+          "name": "Session",
+          "value": "3dane9:1791096081577"
+        }
+      ],
+      "indexedDB": []
+    }
+  ]
+}

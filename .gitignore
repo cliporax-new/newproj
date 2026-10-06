@@ -1,8 +1,11 @@
 node_modules/
-accounts_instagram/*.json
 suspended_accounts/
 data/private/*.json
-data/*.json
+data/comment-*.json
+data/smm-*.json
+data/account-usage.json
+data/account-cooldown.json
+data/target-cooldown.json
 artifacts/
 install-log.txt
 *.tmp

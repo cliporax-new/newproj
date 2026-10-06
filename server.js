@@ -110,6 +110,14 @@ function normalizeInstagramTarget(value) {
 const ACCOUNT_IPS_FILE = path.join(DATA_DIR, 'account-ips.json');
 let accountIps = readJsonFile(ACCOUNT_IPS_FILE, {});
 
+// Auto-resolve missing IPs in background on startup
+try {
+  const { resolveAllAccountIps } = require('./resolve-all-ips.js');
+  setTimeout(() => {
+    resolveAllAccountIps().catch(() => {});
+  }, 2500);
+} catch {}
+
 function getAccountIpInfo(username) {
   accountIps = readJsonFile(ACCOUNT_IPS_FILE, {});
   return accountIps[username] || null;

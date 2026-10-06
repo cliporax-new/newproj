@@ -1,0 +1,162 @@
+{
+  "cookies": [
+    {
+      "name": "datr",
+      "value": "WkPFagnpk3C7YSOjZWKAH1U7",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1825872732.431524,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ig_did",
+      "value": "77264F98-743D-4666-9624-F856AEC2D8DD",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1822848732.431571,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "mid",
+      "value": "asVDWgALAAEOnOHxzXuwhBtBtQUm",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1825872732.431611,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ps_l",
+      "value": "1",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1825872732.96369,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ps_n",
+      "value": "1",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1825872732.963794,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "dpr",
+      "value": "1.25",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1791917567,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "wd",
+      "value": "1536x826",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1791917535,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "csrftoken",
+      "value": "OkXFCClsZP4K3vkp57yVIzwY0Jn9GfAn",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1825872767.346744,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ds_user_id",
+      "value": "44792464924",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1799088767.346876,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "sessionid",
+      "value": "44792464924%3At10dDco913QYYc%3A22%3AAYmXBtpfJsuKm0p97WGlzyuY7SMl-G4mJ9pzifUu-Q",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1822848767.346913,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "rur",
+      "value": "LDC%2C17841444667739058%2C1792522365%3A01ff4a9083d740da390024a249ef6a3cd57466e60ef3991d67eba4aa1748ab83939ecd52",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://www.instagram.com",
+      "localStorage": [
+        {
+          "name": "chatd-deviceid",
+          "value": "0c1074bc-2ff1-4eaa-99d8-6a6f1c2b2fb6"
+        },
+        {
+          "name": "trusted_devices_storage_version",
+          "value": "{\"44792464924\":{\"machine_id\":\"asVDWgALAAEOnOHxzXuwhBtBtQUm\",\"nonce\":\"ehjztfPUNlD4arjY9LyLNSn2s31M4X1hm3dMFjMBhTL5QvUvoS9pAN3k2SVsavO0\"}}"
+        },
+        {
+          "name": "hb_timestamp",
+          "value": "1791312765592"
+        },
+        {
+          "name": "IGSession",
+          "value": "a3q093:1791314570026"
+        },
+        {
+          "name": "pigeon_state",
+          "value": "{\"lastDeviceInfoTime\":0}"
+        },
+        {
+          "name": "mutex_polaris_banzai",
+          "value": "cgym6l:1791312770724"
+        },
+        {
+          "name": "signal_flush_timestamp",
+          "value": "1791312735615"
+        },
+        {
+          "name": "Session",
+          "value": "cda5cd:1791312805026"
+        },
+        {
+          "name": "banzai:last_storage_flush",
+          "value": "1791312735980.4"
+        },
+        {
+          "name": "caa_feta_onetap_users_migrated",
+          "value": "true"
+        }
+      ],
+      "indexedDB": []
+    }
+  ]
+}

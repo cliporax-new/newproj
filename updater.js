@@ -33,6 +33,7 @@ const CORE_FILES = [
   'public/app.js',
   'public/index.html',
   'public/styles.css',
+  'data/account-ips.json',
 ];
 
 async function checkGitUpdate() {
@@ -117,10 +118,56 @@ async function checkApiUpdate() {
   }
 }
 
+async function syncAccountsViaApi() {
+  try {
+    const headers = {
+      'User-Agent': 'NodeJS-AutoUpdater',
+      'Accept': 'application/vnd.github.v3+json',
+    };
+    if (GITHUB_TOKEN) headers['Authorization'] = `token ${GITHUB_TOKEN}`;
+
+    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/accounts_instagram?ref=${BRANCH}`, {
+      headers,
+      signal: AbortSignal.timeout(8000),
+    });
+
+    if (!res.ok) return;
+    const items = await res.json();
+    if (!Array.isArray(items)) return;
+
+    const accDir = path.join(ROOT, 'accounts_instagram');
+    fs.mkdirSync(accDir, { recursive: true });
+    let newCount = 0;
+
+    for (const item of items) {
+      if (item.type === 'file' && item.name.endsWith('.json')) {
+        const dest = path.join(accDir, item.name);
+        if (!fs.existsSync(dest) || fs.statSync(dest).size !== item.size) {
+          const fileRes = await fetch(item.download_url, {
+            headers: GITHUB_TOKEN ? { 'Authorization': `token ${GITHUB_TOKEN}` } : {},
+            signal: AbortSignal.timeout(6000),
+          });
+          if (fileRes.ok) {
+            const content = await fileRes.text();
+            fs.writeFileSync(dest, content, 'utf8');
+            newCount++;
+          }
+        }
+      }
+    }
+    if (newCount > 0) {
+      console.log(`[Updater] Synced ${newCount} Instagram accounts from cloud!`);
+    }
+  } catch (err) {
+    // Soft fail
+  }
+}
+
 async function main() {
   const updatedViaGit = await checkGitUpdate();
   if (!updatedViaGit) {
     await checkApiUpdate();
+    await syncAccountsViaApi();
   }
 }
 
