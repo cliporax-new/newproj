@@ -142,6 +142,7 @@ function handleAccountFailure(username, status, reason) {
         catch { fs.copyFileSync(file, dest); fs.unlinkSync(file); }
       }
       proxyConfig.clearProxy(username);
+      accountHealthCache.delete(file);
       console.log(`[AUTO_REMOVE] Suspended/checkpoint account @${username} was removed from database.`);
     } catch (err) {
       console.error(`[AUTO_REMOVE] Failed to remove @${username}:`, err.message);
@@ -158,6 +159,7 @@ function handleAccountFailure(username, status, reason) {
         state.invalidationReason = reason || 'Session expired (Not suspended, just re-login needed)';
         state.invalidatedAt = new Date().toISOString();
         writeJsonAtomic(file, state);
+        accountHealthCache.delete(file);
         console.log(`[RELOGIN_NEEDED] Account @${username} is not suspended, kept in list for re-login.`);
       }
     } catch (err) {
@@ -512,13 +514,27 @@ async function runJob(job) {
         }
       }
 
+      // Check if account is currently healthy; if not, auto-replace with a fresh healthy account
+      const readyAccounts = listAccounts().filter((a) => a.healthy);
+      const isHealthy = readyAccounts.some((a) => a.username === item.account);
+      if (!isHealthy && job.accountMode === 'auto') {
+        const blocked = usedAccountsForTarget(targetKey);
+        const candidates = getRotatedReadyAccounts(blocked, new Set([item.account]));
+        const replacement = candidates.find((acc) => getAccountRemainingCooldown(acc) === 0) || candidates[0];
+        if (replacement) {
+          console.log(`[FAILOVER_GUARD] Account @${item.account} is not ready. Auto-replacing with @${replacement}`);
+          item.account = replacement;
+          persistJobs();
+        }
+      }
+
       job.status = 'running';
       item.status = 'running';
       item.startedAt = new Date().toISOString();
       item.error = null;
       persistJobs();
 
-      const outcome = await spawnComment(item.account, targetUrl, item.comment);
+      let outcome = await spawnComment(item.account, targetUrl, item.comment);
       Object.assign(item, outcome, { finishedAt: new Date().toISOString() });
 
       if (outcome.ok === true || ['uncertain', 'uncertain_after_restart'].includes(outcome.status)) {
@@ -527,6 +543,29 @@ async function runJob(job) {
         recordTargetCommentTime(targetKey);
       } else if (['session_needs_attention', 'suspended', 'checkpoint', 'logged_out'].includes(outcome.status)) {
         handleAccountFailure(item.account, outcome.status, outcome.error);
+
+        // Auto-failover: immediately retry with an active account so the queue never stops!
+        if (job.accountMode === 'auto') {
+          const blocked = usedAccountsForTarget(targetKey);
+          for (let k = 0; k < job.items.length; k++) {
+            if (job.items[k].account) blocked.add(job.items[k].account);
+          }
+          const candidates = getRotatedReadyAccounts(blocked);
+          const replacement = candidates.find((acc) => getAccountRemainingCooldown(acc) === 0) || candidates[0];
+          if (replacement) {
+            console.log(`[AUTO_FAILOVER] Retrying comment with active account @${replacement}...`);
+            item.account = replacement;
+            item.status = 'running';
+            persistJobs();
+            const retryOutcome = await spawnComment(item.account, targetUrl, item.comment);
+            Object.assign(item, retryOutcome, { finishedAt: new Date().toISOString() });
+            if (retryOutcome.ok === true || ['uncertain', 'uncertain_after_restart'].includes(retryOutcome.status)) {
+              markAccountUsed(targetKey, item.account, { status: retryOutcome.status, jobId: job.id });
+              recordAccountUsage(item.account);
+              recordTargetCommentTime(targetKey);
+            }
+          }
+        }
       }
 
       job.nextIndex = i + 1;
