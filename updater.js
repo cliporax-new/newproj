@@ -30,8 +30,6 @@ const CORE_FILES = [
   'proxy-config.js',
   'smm-api.js',
   'package.json',
-  'START.bat',
-  'SETUP_RDP.bat',
   'public/app.js',
   'public/index.html',
   'public/styles.css',
