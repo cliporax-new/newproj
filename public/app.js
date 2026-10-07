@@ -75,14 +75,24 @@ function renderAccounts() {
             <div class="muted" style="color: #8da4ff; font-weight: 600; margin-top: 3px;">
               🌐 ${account.proxyConfigured ? escapeHtml(account.proxyLabel || 'Dedicated Mobile IP') : 'Dedicated Mobile IP'}
             </div>
-            ${!account.healthy ? `
-              <div style="color: #ffb86c; font-size: 11px; font-weight: 600; margin-top: 3px;">
-                ✅ Not suspended • Re-login needed
+            ${account.accountStatus === 'suspended' ? `
+              <div style="color: #f87171; font-size: 11px; font-weight: 700; margin-top: 3px;">
+                ⚠️ Suspended by Instagram (Human verification challenge)
               </div>
-            ` : ''}
+            ` : (!account.healthy ? `
+              <div style="color: #ffb86c; font-size: 11px; font-weight: 600; margin-top: 3px;">
+                🔄 Session expired • Re-login needed
+              </div>
+            ` : '')}
           </div>
           <div class="account-actions">
-            <span class="badge ${account.healthy ? 'good' : 'bad'}" title="${account.healthy ? 'Ready' : 'Not suspended • Session expired, re-login needed'}">${account.healthy ? 'Ready' : '🔄 Re-login needed'}</span>
+            ${account.accountStatus === 'suspended' ? `
+              <span class="badge bad" style="background: #ef4444; color: #fff; font-weight: 700;" title="Suspended / Challenge required">⚠️ Suspended</span>
+            ` : (account.healthy ? `
+              <span class="badge good" title="Ready to comment">Ready</span>
+            ` : `
+              <span class="badge" style="background: #f59e0b; color: #111; font-weight: 700;" title="Session expired, re-login needed">🔄 Re-login needed</span>
+            `)}
             <button class="secondary relogin">Re-login</button>
             <button class="danger remove">Remove</button>
           </div>

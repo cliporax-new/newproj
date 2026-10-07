@@ -131,41 +131,28 @@ function saveAccountIpInfo(username, ipInfo) {
 
 function handleAccountFailure(username, status, reason) {
   const file = accountFile(username);
-  if (status === 'session_needs_attention' || status === 'suspended' || status === 'checkpoint') {
-    // 1. Account is Suspended / Checkpointed:
-    // Auto-remove completely from database & list so it never appears again
-    try {
-      if (fs.existsSync(file)) {
-        const archiveDir = path.join(ROOT, 'suspended_accounts');
-        fs.mkdirSync(archiveDir, { recursive: true });
-        const dest = path.join(archiveDir, `${username}_${Date.now()}.json`);
-        try { fs.renameSync(file, dest); }
-        catch { fs.copyFileSync(file, dest); fs.unlinkSync(file); }
-      }
-      proxyConfig.clearProxy(username);
-      accountHealthCache.delete(file);
-      console.log(`[AUTO_REMOVE] Suspended/checkpoint account @${username} was removed from database.`);
-    } catch (err) {
-      console.error(`[AUTO_REMOVE] Failed to remove @${username}:`, err.message);
+  if (!fs.existsSync(file)) return;
+  try {
+    const state = JSON.parse(fs.readFileSync(file, 'utf8'));
+    // Always clear sessionid so this account cannot be selected for commenting
+    state.cookies = (state.cookies || []).filter((c) => c.name !== 'sessionid');
+    state.sessionInvalidated = true;
+    state.invalidatedAt = new Date().toISOString();
+
+    if (status === 'suspended' || status === 'session_needs_attention' || status === 'checkpoint') {
+      state.suspended = true;
+      state.invalidationReason = reason || 'Suspended by Instagram (Human verification / challenge required)';
+      console.log(`[SUSPENDED] Account @${username} was logged out and marked as SUSPENDED in UI.`);
+    } else {
+      state.suspended = false;
+      state.invalidationReason = reason || 'Session expired (Re-login needed)';
+      console.log(`[RELOGIN_NEEDED] Account @${username} was logged out and marked as RE-LOGIN NEEDED in UI.`);
     }
-  } else if (status === 'logged_out') {
-    // 2. Account is NOT suspended, just logged out / session expired:
-    // Keep in list with "Re-login needed" icon
-    try {
-      if (fs.existsSync(file)) {
-        const state = JSON.parse(fs.readFileSync(file, 'utf8'));
-        state.cookies = (state.cookies || []).filter((c) => c.name !== 'sessionid');
-        state.sessionInvalidated = true;
-        state.suspended = false;
-        state.invalidationReason = reason || 'Session expired (Not suspended, just re-login needed)';
-        state.invalidatedAt = new Date().toISOString();
-        writeJsonAtomic(file, state);
-        accountHealthCache.delete(file);
-        console.log(`[RELOGIN_NEEDED] Account @${username} is not suspended, kept in list for re-login.`);
-      }
-    } catch (err) {
-      console.error(`[RELOGIN_NEEDED] Failed to update @${username}:`, err.message);
-    }
+
+    writeJsonAtomic(file, state);
+    accountHealthCache.delete(file);
+  } catch (err) {
+    console.error(`[ACCOUNT_STATUS_UPDATE] Failed to update @${username}:`, err.message);
   }
 }
 

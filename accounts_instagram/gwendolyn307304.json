@@ -91,16 +91,6 @@
       "sameSite": "Lax"
     },
     {
-      "name": "sessionid",
-      "value": "20412516574%3A7mSK1r6mojkeKf%3A6%3AAYks72bUX1aQvcENoPG3gikgUhQfdxSu6YtFD-uxrQ",
-      "domain": ".instagram.com",
-      "path": "/",
-      "expires": 1822767471.552889,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "Lax"
-    },
-    {
       "name": "rur",
       "value": "SNB%2C17841420537221564%2C1792441078%3A01ffd88d19355bc30023bdb86d7efbb87de32b016388caa4ced383c5844e877b89939cbf",
       "domain": ".instagram.com",
@@ -208,5 +198,8 @@
       ],
       "indexedDB": []
     }
-  ]
+  ],
+  "suspended": true,
+  "sessionInvalidated": true,
+  "invalidationReason": "Confirm human verification challenge required"
 }

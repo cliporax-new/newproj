@@ -61,20 +61,19 @@ async function isSuspended(page) {
     page.getByText(/your account has been disabled/i),
     page.getByText(/account suspended/i),
     page.getByText(/your account has been locked/i),
+    page.getByText(/confirm you're human/i),
+    page.getByText(/confirm you are human/i),
   ], 800));
 }
 
 async function needsAttention(page) {
   const url = page.url();
-  if (/checkpoint|challenge|suspended|disabled|terms\/unblock/i.test(url)) return true;
+  if (/checkpoint|challenge/i.test(url)) return true;
   return Boolean(await firstVisible([
     page.getByText(/confirm it'?s you/i),
     page.getByText(/suspicious login/i),
     page.getByText(/security code/i),
     page.getByText(/challenge required/i),
-    page.getByText(/we suspended your account/i),
-    page.getByText(/your account has been disabled/i),
-    page.getByText(/account suspended/i),
     page.getByText(/help us confirm you own this account/i),
     page.getByText(/your account was compromised/i),
   ], 800));
@@ -329,7 +328,8 @@ async function submitComment(page, box, text) {
       } else {
         emptyChecks = 0;
       }
-      if (await needsAttention(page) || await isSuspended(page)) return 'session_needs_attention';
+      if (await isSuspended(page)) return 'suspended';
+      if (await needsAttention(page)) return 'checkpoint';
     }
     return 'uncertain';
   } finally {
@@ -387,11 +387,11 @@ async function main() {
     const pageState = await waitForPostPageReady(page, 60000);
 
     if (pageState.status === 'suspended') {
-      result({ ok: false, account: username, status: 'session_needs_attention', error: 'Instagram account is suspended. Verification required.' });
+      result({ ok: false, account: username, status: 'suspended', error: 'Instagram account is suspended. Human verification / challenge required.' });
       return;
     }
     if (pageState.status === 'checkpoint') {
-      result({ ok: false, account: username, status: 'session_needs_attention', error: 'Instagram requires account checkpoint / security confirmation.' });
+      result({ ok: false, account: username, status: 'checkpoint', error: 'Instagram requires account checkpoint / security confirmation.' });
       return;
     }
     if (pageState.status === 'logged_out' || !(await hasSessionCookie(context))) {
@@ -408,8 +408,12 @@ async function main() {
     }
 
     // Double check session cookies and login state
-    if (await needsAttention(page) || await isSuspended(page)) {
-      result({ ok: false, account: username, status: 'session_needs_attention', error: 'Instagram requires manual verification for this account.' });
+    if (await isSuspended(page)) {
+      result({ ok: false, account: username, status: 'suspended', error: 'Instagram account is suspended. Human verification / challenge required.' });
+      return;
+    }
+    if (await needsAttention(page)) {
+      result({ ok: false, account: username, status: 'checkpoint', error: 'Instagram requires manual verification for this account.' });
       return;
     }
 
@@ -436,8 +440,10 @@ async function main() {
 
     if (outcome === 'posted') {
       result({ ok: true, account: username, status: 'posted', postedAt, stayedSeconds: Math.round(stayMs / 1000) });
-    } else if (outcome === 'session_needs_attention') {
-      result({ ok: false, account: username, status: outcome, error: 'Instagram requires manual account verification.' });
+    } else if (outcome === 'suspended') {
+      result({ ok: false, account: username, status: 'suspended', error: 'Instagram account is suspended. Human verification / challenge required.' });
+    } else if (outcome === 'checkpoint' || outcome === 'session_needs_attention') {
+      result({ ok: false, account: username, status: 'checkpoint', error: 'Instagram requires manual account checkpoint verification.' });
     } else {
       result({ ok: false, account: username, status: outcome, postedAt, error: 'Comment submission could not be confirmed. It was not retried to avoid duplicates.' });
     }
