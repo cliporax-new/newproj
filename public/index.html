@@ -18,7 +18,7 @@
 
   <main class="shell">
     <!-- SMM API Banner -->
-    <div id="smmBanner" style="background: linear-gradient(90deg, #1f274a, #161b33); border: 1px solid #3c4c82; border-radius: 10px; padding: 12px 18px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+    <div id="smmBanner" style="background: linear-gradient(90deg, #1f274a, #161b33); border: 1px solid #3c4c82; border-radius: 10px; padding: 12px 18px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; grid-column: 1 / -1;">
       <div>
         <div style="font-weight: 700; color: #8da4ff; font-size: 13px; margin-bottom: 3px;">⚡ SMM PANEL PROVIDER API (Port 4620)</div>
         <div style="font-size: 13px; color: #cbd5e1;">
@@ -133,6 +133,41 @@ https://www.instagram.com/p/ABC12345/ Super video!"></textarea>
           <span id="jobStatus" class="badge">queued</span>
         </div>
         <div id="jobResults" class="job-results"></div>
+      </div>
+    </section>
+
+    <!-- Live Orders & Activity Panel -->
+    <section class="panel orders-panel" style="grid-column: 1 / -1;">
+      <div class="panel-head">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="live-pulse-dot"></span>
+            <h2>Live Orders & Comments Activity</h2>
+          </div>
+          <p>Real-time monitor of incoming requests (SMM API & manual queues), target reel links, comments posted, and live status.</p>
+        </div>
+        <div class="activity-stats-bar">
+          <div class="stat-badge">
+            <span class="stat-label">TOTAL ORDERS</span>
+            <span id="statTotalOrders" class="stat-value">0</span>
+          </div>
+          <div class="stat-badge highlight">
+            <span class="stat-label">ACTIVE / POSTING</span>
+            <span id="statActiveOrders" class="stat-value">0</span>
+          </div>
+          <div class="stat-badge success">
+            <span class="stat-label">COMMENTS POSTED</span>
+            <span id="statCommentsPosted" class="stat-value">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="ordersList" class="orders-list">
+        <div class="empty-orders">
+          <div style="font-size: 26px; margin-bottom: 8px;">📡</div>
+          <strong style="color: #cbd5e1; font-size: 14px;">Waiting for incoming orders...</strong>
+          <small style="color: var(--muted); display: block; margin-top: 4px;">Orders placed via SMM Panel API (Port 4620) or Dashboard queue will automatically appear here with real-time comments counter and link tracking.</small>
+        </div>
       </div>
     </section>
   </main>

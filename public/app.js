@@ -486,7 +486,149 @@ async function loadSmmInfo() {
   } catch {}
 }
 
+// ─── Live Orders & Activity Tracking ───
+const expandedOrders = new Set();
+
+function formatOrderStatus(status) {
+  if (status === 'running') return '<span class="badge" style="color: #60a5fa; background: rgba(96, 165, 250, 0.15); border-color: rgba(96, 165, 250, 0.3);">🟢 Posting Now</span>';
+  if (status === 'waiting') return '<span class="badge" style="color: #f59e0b; background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.3);">⏳ 5m Gap Waiting</span>';
+  if (status === 'completed') return '<span class="badge good">✅ Completed</span>';
+  if (status === 'completed_with_errors') return '<span class="badge warn" style="color: #fbbf24; background: rgba(251, 191, 36, 0.15); border-color: rgba(251, 191, 36, 0.3);">⚠️ Completed (Errors)</span>';
+  if (status === 'failed') return '<span class="badge bad">❌ Failed</span>';
+  return '<span class="badge">⏱️ Queued</span>';
+}
+
+function formatItemStatus(item) {
+  if (item.ok || item.status === 'posted') return '<span style="color: #4fd18b; font-weight: 700;">✅ Posted</span>';
+  if (item.status === 'running') return '<span style="color: #60a5fa; font-weight: 700;">🟢 Posting...</span>';
+  if (item.status === 'waiting') return '<span style="color: #f59e0b;">⏳ Waiting 5m gap</span>';
+  if (item.status === 'failed' || item.error) return `<span style="color: #ff6b74;" title="${escapeHtml(item.error || 'Failed')}">❌ Failed</span>`;
+  return '<span style="color: #8f9baa;">⏱️ Queued</span>';
+}
+
+function renderOrders(orders = []) {
+  const container = $('#ordersList');
+  if (!container) return;
+
+  if (!orders.length) {
+    container.innerHTML = `
+      <div class="empty-orders">
+        <div style="font-size: 26px; margin-bottom: 8px;">📡</div>
+        <strong style="color: #cbd5e1; font-size: 14px;">Waiting for incoming orders...</strong>
+        <small style="color: var(--muted); display: block; margin-top: 4px;">Orders placed via SMM Panel API (Port 4620) or Dashboard queue will automatically appear here with real-time comments counter and link tracking.</small>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = orders.map((order) => {
+    const total = order.totalComments || (order.items || []).length || 1;
+    const posted = order.postedComments || 0;
+    const pct = Math.min(100, Math.round((posted / total) * 100));
+    const isSmm = order.source === 'smm';
+    const isExpanded = expandedOrders.has(order.id);
+    const cardClass = ['order-card', order.status].filter(Boolean).join(' ');
+
+    const itemsHtml = (order.items || []).map((it, idx) => `
+      <div class="order-item-row">
+        <span style="color: var(--muted); font-weight: 700;">#${it.index || idx + 1}</span>
+        <strong style="color: #8da4ff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">@${escapeHtml(it.account || 'Auto')}</strong>
+        <span style="color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(it.comment || '')}">${escapeHtml(shortComment(it.comment, 55))}</span>
+        <div style="text-align: right;">${formatItemStatus(it)}</div>
+      </div>
+    `).join('');
+
+    return `
+      <article class="${cardClass}" data-order-id="${escapeHtml(order.id)}">
+        <div class="order-top-row">
+          <div class="order-id-group">
+            <span class="source-tag ${isSmm ? 'smm' : 'manual'}">${isSmm ? '⚡ SMM API Order' : '💻 Manual Queue'} ${escapeHtml(order.orderNumber || order.id)}</span>
+            ${formatOrderStatus(order.status)}
+          </div>
+          <div style="font-size: 12px; color: var(--muted);">
+            ${prettyDate(order.createdAt)}
+          </div>
+        </div>
+
+        <div class="order-link-row">
+          <span style="font-size: 12px; color: var(--muted); font-weight: 700;">TARGET REEL:</span>
+          ${order.postUrl ? `
+            <a href="${escapeHtml(order.postUrl)}" target="_blank" rel="noopener noreferrer" class="order-link-anchor" title="${escapeHtml(order.postUrl)}">
+              🔗 ${escapeHtml(order.postUrl)} ↗
+            </a>
+          ` : '<span style="color: var(--muted);">Multi-Link Queue</span>'}
+        </div>
+
+        <div class="order-progress-section">
+          <div class="order-progress-info">
+            <span><strong>${posted} / ${total} comments posted</strong></span>
+            <span style="font-weight: 700; color: ${pct === 100 ? '#4fd18b' : '#8da4ff'};">${pct}%</span>
+          </div>
+          <div class="order-progress-track">
+            <div class="order-progress-fill ${order.status}" style="width: ${pct}%;"></div>
+          </div>
+        </div>
+
+        <div class="order-meta-row">
+          <div>
+            ${order.waitReason ? `<span style="color: #f59e0b;">⏳ ${escapeHtml(order.waitReason)}</span>` : ''}
+            ${order.finishedAt ? `<span>Finished: ${prettyDate(order.finishedAt)}</span>` : ''}
+          </div>
+          <button type="button" class="order-details-toggle" data-toggle-id="${escapeHtml(order.id)}">
+            ${isExpanded ? '▲ Hide Details' : `▼ View Comments & Accounts (${(order.items || []).length})`}
+          </button>
+        </div>
+
+        <div id="details_${escapeHtml(order.id)}" class="order-items-table ${isExpanded ? '' : 'hidden'}">
+          <div class="order-item-row head">
+            <span>#</span>
+            <span>Account</span>
+            <span>Comment</span>
+            <span style="text-align: right;">Status</span>
+          </div>
+          ${itemsHtml || '<div style="padding: 10px; color: var(--muted); text-align: center;">No comment logs recorded.</div>'}
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+async function loadActivity() {
+  try {
+    const data = await api('/api/activity');
+    if (!data || !data.ok) return;
+
+    if (data.stats) {
+      if ($('#statTotalOrders')) $('#statTotalOrders').textContent = data.stats.totalOrders || 0;
+      if ($('#statActiveOrders')) $('#statActiveOrders').textContent = data.stats.activeOrders || 0;
+      if ($('#statCommentsPosted')) $('#statCommentsPosted').textContent = data.stats.totalCommentsPosted || 0;
+    }
+
+    renderOrders(data.orders || []);
+  } catch {}
+}
+
+// Delegate toggle clicks for order breakdown
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.order-details-toggle');
+  if (!btn) return;
+  const orderId = btn.getAttribute('data-toggle-id');
+  if (!orderId) return;
+  if (expandedOrders.has(orderId)) {
+    expandedOrders.delete(orderId);
+  } else {
+    expandedOrders.add(orderId);
+  }
+  const detailsEl = $(`#details_${CSS.escape(orderId)}`);
+  if (detailsEl) {
+    const isNowExpanded = expandedOrders.has(orderId);
+    detailsEl.classList.toggle('hidden', !isNowExpanded);
+    btn.textContent = isNowExpanded ? '▲ Hide Details' : `▼ View Comments & Accounts`;
+  }
+});
+
 addCommentRow('', 0);
 updateAccountModeUi();
 loadAccounts().then(refreshReelUsage).catch((error) => toast(error.message, 'error'));
 loadSmmInfo();
+loadActivity();
+setInterval(loadActivity, 3000);

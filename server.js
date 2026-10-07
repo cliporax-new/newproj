@@ -806,6 +806,109 @@ function publicJob(job) {
   return clone;
 }
 
+function getActivitySummary() {
+  const allJobs = [...jobs.values()]
+    .sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+
+  let totalCommentsPosted = 0;
+  let activeCount = 0;
+  let completedCount = 0;
+  const seenSmmOrderIds = new Set();
+  const seenJobIds = new Set();
+
+  const formattedJobs = allJobs.slice(0, 50).map((job) => {
+    seenJobIds.add(job.id);
+    if (job.smmOrderId) seenSmmOrderIds.add(String(job.smmOrderId));
+
+    const items = job.items || [];
+    const posted = items.filter((it) => it.ok || it.status === 'posted').length;
+    const running = items.filter((it) => it.status === 'running').length;
+    const isCompleted = ['completed', 'completed_with_errors'].includes(job.status);
+    const isActive = ['running', 'waiting', 'queued'].includes(job.status);
+
+    totalCommentsPosted += posted;
+    if (isCompleted) completedCount++;
+    if (isActive) activeCount++;
+
+    return {
+      id: job.id,
+      orderNumber: job.smmOrderId ? `#${job.smmOrderId}` : job.id.replace(/^comment_/, ''),
+      source: job.source || (job.smmOrderId ? 'smm' : 'manual'),
+      postUrl: job.postUrl,
+      shortcode: job.shortcode || 'reel',
+      status: job.status,
+      createdAt: job.createdAt,
+      finishedAt: job.finishedAt,
+      totalComments: items.length,
+      postedComments: posted,
+      runningComments: running,
+      items: items.map((it) => ({
+        index: it.index,
+        account: it.account,
+        comment: it.comment,
+        status: it.status,
+        ok: it.ok,
+        error: it.error,
+        finishedAt: it.finishedAt || it.startedAt,
+      })),
+    };
+  });
+
+  // Check smm-orders.json for pending or unlinked SMM orders
+  const smmOrdersFile = path.join(DATA_DIR, 'smm-orders.json');
+  const smmStore = readJsonFile(smmOrdersFile, null);
+  const extraSmmOrders = [];
+  if (smmStore && smmStore.orders) {
+    for (const [id, ord] of Object.entries(smmStore.orders)) {
+      if (seenSmmOrderIds.has(String(id)) || (ord.jobId && seenJobIds.has(ord.jobId))) {
+        continue;
+      }
+      const isPending = ord.state === 'pending';
+      const isRunning = ord.state === 'running';
+      const isDone = ['completed', 'partial'].includes(ord.state) || ord.final;
+      if (isPending || isRunning) activeCount++;
+      if (isDone) completedCount++;
+      totalCommentsPosted += (ord.posted || 0);
+
+      extraSmmOrders.push({
+        id: ord.jobId || `smm_${id}`,
+        orderNumber: `#${id}`,
+        source: 'smm',
+        postUrl: ord.link,
+        shortcode: 'reel',
+        status: isPending ? 'queued' : (ord.jobStatus || ord.state),
+        createdAt: ord.createdAt,
+        finishedAt: ord.finishedAt || null,
+        totalComments: ord.quantity || (ord.comments || []).length,
+        postedComments: ord.posted || 0,
+        runningComments: isRunning ? 1 : 0,
+        waitReason: ord.waitReason || null,
+        items: (ord.comments || []).map((text, idx) => ({
+          index: idx + 1,
+          account: 'Auto-assigned',
+          comment: text,
+          status: isPending ? 'queued' : (idx < (ord.posted || 0) ? 'posted' : 'waiting'),
+          ok: idx < (ord.posted || 0),
+        })),
+      });
+    }
+  }
+
+  const allOrders = [...extraSmmOrders, ...formattedJobs]
+    .sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+
+  return {
+    ok: true,
+    stats: {
+      totalOrders: allOrders.length,
+      activeOrders: activeCount,
+      completedOrders: completedCount,
+      totalCommentsPosted,
+    },
+    orders: allOrders.slice(0, 50),
+  };
+}
+
 loadJobs();
 
 const server = http.createServer(async (req, res) => {
@@ -819,6 +922,10 @@ const server = http.createServer(async (req, res) => {
 
     if (route === '/api/accounts' && req.method === 'GET') {
       return sendJson(res, 200, { accounts: listAccounts() });
+    }
+
+    if ((route === '/api/activity' || route === '/api/comment-jobs') && req.method === 'GET') {
+      return sendJson(res, 200, getActivitySummary());
     }
 
     if (route === '/api/smm-info' && req.method === 'GET') {
