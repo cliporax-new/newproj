@@ -44,11 +44,18 @@ async function checkGitUpdate() {
     if (fs.existsSync(path.join(ROOT, '.git'))) {
       execSync('git --version', { stdio: 'ignore' });
       console.log('[Updater] Checking updates via Git...');
-      const output = execSync(`git pull origin ${BRANCH}`, { cwd: ROOT, encoding: 'utf8', timeout: 8000 });
-      if (!/already up to date/i.test(output)) {
-        console.log('[Updater] Successfully updated to latest version via Git!');
-      } else {
-        console.log('[Updater] App is already on the latest version.');
+      try {
+        const output = execSync(`git pull origin ${BRANCH}`, { cwd: ROOT, encoding: 'utf8', timeout: 10000 });
+        if (!/already up to date/i.test(output)) {
+          console.log('[Updater] Successfully updated to latest version via Git!');
+        } else {
+          console.log('[Updater] App is already on the latest version.');
+        }
+      } catch {
+        // If git pull encounters any divergent history, cleanly sync to remote main
+        execSync(`git fetch origin ${BRANCH}`, { cwd: ROOT, encoding: 'utf8', timeout: 12000 });
+        execSync(`git reset --hard origin/${BRANCH}`, { cwd: ROOT, encoding: 'utf8', timeout: 12000 });
+        console.log('[Updater] Cleanly synced to latest version from GitHub!');
       }
       return true;
     }
