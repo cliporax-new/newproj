@@ -6,7 +6,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
 const proxyConfig = require('./proxy-config.js');
-const autoLogin = require('./auto-login.js');
+let autoLogin = null;
+try {
+  autoLogin = require('./auto-login.js');
+} catch (err) {
+  // Graceful fallback: will try loading when route is called
+}
 
 const PORT = Number(process.env.PORT || 4610);
 const HOST = '127.0.0.1';
@@ -1028,6 +1033,12 @@ const server = http.createServer(async (req, res) => {
 
     // Bulk Auto-Login endpoint (username:password:2FA)
     if (route === '/api/accounts/bulk-auto-login' && req.method === 'POST') {
+      if (!autoLogin) {
+        try { autoLogin = require('./auto-login.js'); } catch {}
+      }
+      if (!autoLogin) {
+        return sendJson(res, 500, { ok: false, error: 'Auto-login module not loaded. Please ensure auto-login.js exists.' });
+      }
       const body = await readBody(req);
       const rawText = String(body.text || '');
       const parsed = autoLogin.parseBulkAccounts(rawText);
@@ -1047,7 +1058,10 @@ const server = http.createServer(async (req, res) => {
 
     // Bulk Auto-Login live status
     if (route === '/api/accounts/bulk-auto-login-status' && req.method === 'GET') {
-      return sendJson(res, 200, { ok: true, state: autoLogin.getBulkLoginState() });
+      if (!autoLogin) {
+        try { autoLogin = require('./auto-login.js'); } catch {}
+      }
+      return sendJson(res, 200, { ok: true, state: autoLogin ? autoLogin.getBulkLoginState() : { running: false } });
     }
 
     if (route === '/api/login' && req.method === 'POST') {

@@ -96,12 +96,13 @@ async function checkApiUpdate() {
       }
     } catch {}
 
-    if (localSha === remoteSha) {
+    const missingFiles = CORE_FILES.filter((f) => !fs.existsSync(path.join(ROOT, f)));
+    if (localSha === remoteSha && missingFiles.length === 0) {
       console.log('[Updater] App is already on the latest version.');
       return;
     }
 
-    console.log(`[Updater] New update found (${remoteSha.slice(0, 7)}). Downloading updated files...`);
+    console.log(`[Updater] Syncing updates (${remoteSha.slice(0, 7)})... Missing files: ${missingFiles.length}`);
 
     for (const relFile of CORE_FILES) {
       try {
