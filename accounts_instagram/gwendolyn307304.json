@@ -199,7 +199,8 @@
       "indexedDB": []
     }
   ],
-  "suspended": true,
+  "suspended": false,
   "sessionInvalidated": true,
-  "invalidationReason": "Confirm human verification challenge required"
+  "invalidationReason": "Session cookie missing (Re-login needed)",
+  "invalidatedAt": "2026-10-08T05:58:30.658Z"
 }

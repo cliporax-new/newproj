@@ -214,6 +214,100 @@ function listAccounts() {
   return list.sort((a, b) => a.username.localeCompare(b.username));
 }
 
+async function verifyAccountLive(username) {
+  const file = accountFile(username);
+  if (!fs.existsSync(file)) return { username, status: 'missing', healthy: false };
+  let state;
+  try {
+    state = JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch {
+    return { username, status: 'corrupt', healthy: false };
+  }
+
+  const cookies = Array.isArray(state.cookies) ? state.cookies : [];
+  const sessionCookie = cookies.find((c) => c.name === 'sessionid' && c.value);
+  if (!sessionCookie) {
+    handleAccountFailure(username, 'logged_out', 'Session cookie missing (Re-login needed)');
+    return { username, status: 'logged_out', healthy: false };
+  }
+
+  const cookieStr = cookies.map((c) => `${c.name}=${c.value}`).join('; ');
+  const csrf = cookies.find((c) => c.name === 'csrftoken')?.value || '';
+
+  try {
+    const res = await fetch('https://www.instagram.com/api/v1/accounts/edit/web_form_data/', {
+      method: 'GET',
+      redirect: 'manual',
+      signal: AbortSignal.timeout(8000),
+      headers: {
+        'Cookie': cookieStr,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        'X-IG-App-ID': '936619743392459',
+        'X-CSRFToken': csrf,
+        'X-Requested-With': 'XMLHttpRequest',
+        'Referer': 'https://www.instagram.com/accounts/edit/',
+      },
+    });
+
+    const location = res.headers.get('location') || '';
+
+    if (res.status === 200) {
+      if (state.suspended || state.sessionInvalidated) {
+        state.suspended = false;
+        state.sessionInvalidated = false;
+        state.invalidationReason = null;
+        writeJsonAtomic(file, state);
+        accountHealthCache.delete(file);
+      }
+      return { username, status: 'ready', healthy: true };
+    }
+
+    if (res.status === 302) {
+      if (location.includes('suspended') || location.includes('challenge') || location.includes('checkpoint')) {
+        handleAccountFailure(username, 'suspended', 'Suspended by Instagram (Human verification / challenge required)');
+        return { username, status: 'suspended', healthy: false, location };
+      }
+      handleAccountFailure(username, 'logged_out', 'Session expired (Re-login needed)');
+      return { username, status: 'logged_out', healthy: false, location };
+    }
+
+    if (res.status === 401) {
+      handleAccountFailure(username, 'logged_out', 'Session expired (Re-login needed)');
+      return { username, status: 'logged_out', healthy: false };
+    }
+
+    if (res.status === 400 || res.status === 403) {
+      handleAccountFailure(username, 'suspended', 'Suspended or restricted by Instagram');
+      return { username, status: 'suspended', healthy: false };
+    }
+
+    return { username, status: `http_${res.status}`, healthy: false };
+  } catch (err) {
+    return { username, status: 'network_error', error: err.message, healthy: !state.suspended && !state.sessionInvalidated };
+  }
+}
+
+let isVerifyingAccounts = false;
+async function verifyAllAccountsLive() {
+  if (isVerifyingAccounts) return listAccounts();
+  isVerifyingAccounts = true;
+  console.log('[VERIFY_SESSIONS] Checking live session validity for all accounts...');
+  try {
+    const names = fs.existsSync(ACCOUNTS_DIR) ? fs.readdirSync(ACCOUNTS_DIR).filter((n) => n.endsWith('.json')) : [];
+    for (const name of names) {
+      const username = name.replace(/\.json$/, '');
+      await verifyAccountLive(username);
+    }
+    console.log('[VERIFY_SESSIONS] Live session check completed.');
+  } catch (err) {
+    console.error('[VERIFY_SESSIONS] Error during session verification:', err.message);
+  } finally {
+    isVerifyingAccounts = false;
+  }
+  return listAccounts();
+}
+
+
 // ─── Account Usage, Fair Rotation & Cooldown Guards ───
 let accountUsage = readJsonFile(USAGE_FILE, {});
 let accountCooldown = readJsonFile(ACCOUNT_COOLDOWN_FILE, {});
@@ -911,6 +1005,13 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 200, { accounts: listAccounts() });
     }
 
+    if (route === '/api/accounts/verify-all' && (req.method === 'POST' || req.method === 'GET')) {
+      const accounts = await verifyAllAccountsLive();
+      const readyCount = accounts.filter((a) => a.healthy).length;
+      const deadCount = accounts.length - readyCount;
+      return sendJson(res, 200, { ok: true, accounts, readyCount, deadCount });
+    }
+
     if ((route === '/api/activity' || route === '/api/comment-jobs') && req.method === 'GET') {
       return sendJson(res, 200, getActivitySummary());
     }
@@ -1046,6 +1147,12 @@ function openDashboard() {
 server.listen(PORT, HOST, () => {
   console.log(`Instagram Automation Server running at http://${HOST}:${PORT}`);
   openDashboard();
+  setTimeout(() => {
+    verifyAllAccountsLive().catch((e) => console.error('[VERIFY_STARTUP_ERR]', e.message));
+  }, 4000);
+  setInterval(() => {
+    verifyAllAccountsLive().catch((e) => console.error('[VERIFY_INTERVAL_ERR]', e.message));
+  }, 15 * 60 * 1000);
 });
 
 // ─── SMM Panel Provider API (isolated module, separate port) ───

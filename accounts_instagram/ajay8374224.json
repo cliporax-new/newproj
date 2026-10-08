@@ -71,16 +71,6 @@
       "sameSite": "None"
     },
     {
-      "name": "sessionid",
-      "value": "45999750754%3AqRbztEhFR85ZWG%3A27%3AAYnUmNYjb2kS2moWE2EO9DXSLAB21VF4GZ1TMHCdEg",
-      "domain": ".instagram.com",
-      "path": "/",
-      "expires": 1822847789.695861,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "None"
-    },
-    {
       "name": "rur",
       "value": "PRN%2C17841446042639968%2C1792521388%3A01ff2a107f6bd30405364466bfb60d47133e68c490457e1d46ba38dd6e62011014fc5d81",
       "domain": ".instagram.com",
@@ -142,5 +132,9 @@
       ],
       "indexedDB": []
     }
-  ]
+  ],
+  "sessionInvalidated": true,
+  "invalidatedAt": "2026-10-08T05:58:30.650Z",
+  "suspended": true,
+  "invalidationReason": "Suspended by Instagram (Human verification / challenge required)"
 }

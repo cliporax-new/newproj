@@ -58,7 +58,8 @@ function formatLocation(ipInfo) {
 }
 
 function renderAccounts() {
-  $('#accountCount').textContent = accounts.length;
+  const readyCount = accounts.filter((a) => a.healthy).length;
+  $('#accountCount').innerHTML = `<span style="color: #4ade80; font-weight: 700;">${readyCount} Ready</span> <span style="opacity: 0.6; font-size: 13px;">(${accounts.length} total)</span>`;
   if (!accounts.length) {
     accountsEl.innerHTML = '<div class="empty-card">No Instagram accounts saved yet.</div>';
     return;
@@ -408,6 +409,23 @@ $('#loginBtn').addEventListener('click', async () => {
     $('#newUsername').value = '';
   } finally {
     button.disabled = false;
+  }
+});
+
+$('#verifyAccountsBtn')?.addEventListener('click', async () => {
+  const btn = $('#verifyAccountsBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Checking sessions...';
+  try {
+    toast('Checking Instagram session health for all accounts...', 'info');
+    const res = await api('/api/accounts/verify-all', { method: 'POST' });
+    await loadAccounts();
+    toast(`Session check complete! ${res.readyCount ?? 0} active, ${res.deadCount ?? 0} suspended/expired.`, 'success');
+  } catch (err) {
+    toast(`Session check failed: ${err.message}`, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔍 Verify All Sessions';
   }
 });
 

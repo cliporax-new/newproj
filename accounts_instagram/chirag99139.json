@@ -71,16 +71,6 @@
       "sameSite": "None"
     },
     {
-      "name": "sessionid",
-      "value": "39650340776%3A2oLOp8DuPFyuG3%3A28%3AAYl-6DEOKjZT0fnAEOHKsLGUrMd4WlUV5W-3UUAvpA",
-      "domain": ".instagram.com",
-      "path": "/",
-      "expires": 1822848895.754682,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "None"
-    },
-    {
       "name": "ps_l",
       "value": "0",
       "domain": ".instagram.com",
@@ -166,5 +156,9 @@
       ],
       "indexedDB": []
     }
-  ]
+  ],
+  "sessionInvalidated": true,
+  "invalidatedAt": "2026-10-08T05:58:30.653Z",
+  "suspended": true,
+  "invalidationReason": "Suspended by Instagram (Human verification / challenge required)"
 }
