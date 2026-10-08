@@ -191,20 +191,21 @@ async function loginSingleAccount(acc, options = {}) {
     await passInput.fill(password);
     await page.waitForTimeout(600);
 
-    // 4. Submit login
-    await passInput.press('Enter');
-    await page.waitForTimeout(2000);
-
+    // 4. Submit login - click Log In button ONCE (never double-submit with Enter + button click)
     try {
-      const submitBtn = page.locator('button[type="submit"], input[type="submit"], button:has-text("Log in")').first();
-      if (await submitBtn.isVisible({ timeout: 2000 })) {
-        await submitBtn.click().catch(() => {});
+      const submitBtn = page.locator('button[type="submit"], button:has-text("Log in")').first();
+      if (await submitBtn.isVisible({ timeout: 3000 })) {
+        await submitBtn.click();
+      } else {
+        await passInput.press('Enter');
       }
-    } catch {}
+    } catch {
+      await passInput.press('Enter');
+    }
 
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(4000);
 
-    // 5. Wait for outcome after submitting login (poll up to 30s)
+    // 5. Wait for outcome after submitting login (poll up to 60s for slow connections)
     let is2FA = false;
     let loginSucceeded = false;
     const twoFaSpecificSelectors = [
@@ -227,7 +228,7 @@ async function loginSingleAccount(acc, options = {}) {
       'input[maxlength="8"]',
     ];
 
-    for (let c = 0; c < 20; c++) {
+    for (let c = 0; c < 40; c++) {
       await page.waitForTimeout(1500);
 
       // Check if session already exists (logged in without 2FA)
