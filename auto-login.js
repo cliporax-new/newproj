@@ -3,7 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
-const { chromium } = require('playwright');
+const { chromium, firefox } = require('playwright');
 const proxyConfig = require('./proxy-config.js');
 
 const ROOT = __dirname;
@@ -119,15 +119,21 @@ async function loginSingleAccount(acc, options = {}) {
     proxy = proxyConfig.getPlaywrightProxy(username);
   }
 
+  const useFirefox = options.browserEngine !== 'chromium';
+  const engine = useFirefox ? firefox : chromium;
+
   const launchOpts = {
     headless: !showBrowser,
-    args: [
+  };
+
+  if (!useFirefox) {
+    launchOpts.args = [
       '--start-maximized',
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-blink-features=AutomationControlled',
-    ],
-  };
+    ];
+  }
 
   if (proxy && proxy.server) {
     launchOpts.proxy = proxy;
@@ -137,11 +143,14 @@ async function loginSingleAccount(acc, options = {}) {
   let context = null;
 
   try {
-    browser = await chromium.launch(launchOpts);
-    context = await browser.newContext({
-      viewport: null,
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
-    });
+    browser = await engine.launch(launchOpts);
+    const contextOpts = useFirefox
+      ? { viewport: { width: 1280, height: 800 } }
+      : {
+          viewport: null,
+          userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        };
+    context = await browser.newContext(contextOpts);
 
     const page = await context.newPage();
 
@@ -246,7 +255,12 @@ async function loginSingleAccount(acc, options = {}) {
       const hasPasswordField = (await page.locator('input[type="password"], input[name="password"]').count().catch(() => 0)) > 0;
 
       // 2FA URL or text detection
-      const is2faUrl = url.includes('/two_factor') || url.includes('/challenge') || url.includes('/onetap') || url.includes('/auth');
+      const is2faUrl =
+        url.includes('/two_factor') ||
+        url.includes('/two_step_verification') ||
+        url.includes('/challenge') ||
+        url.includes('/onetap') ||
+        url.includes('/auth');
       const is2faText =
         pageText.includes('security code') ||
         pageText.includes('6-digit') ||
