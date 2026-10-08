@@ -399,7 +399,21 @@ async function loginSingleAccount(acc, options = {}) {
       timestamp: new Date().toISOString(),
     };
   } catch (err) {
+    if (context) {
+      try { await context.close(); } catch {}
+      context = null;
+    }
+    if (browser) {
+      try { await browser.close(); } catch {}
+      browser = null;
+    }
+
     let msg = err.message || 'Unknown error';
+    if (useProxy && (msg.includes('ERR_PROXY_CONNECTION_FAILED') || msg.includes('ERR_TUNNEL_CONNECTION_FAILED') || msg.includes('Proxy unreachable'))) {
+      console.log(`[PROXY_FALLBACK] Proxy unreachable on local PC/Wi-Fi, auto-retrying @${username} via direct connection...`);
+      return loginSingleAccount(acc, { ...options, useProxy: false });
+    }
+
     if (msg.includes('ERR_PROXY_CONNECTION_FAILED')) {
       msg = 'Proxy unreachable. Uncheck proxy or run on RDP.';
     }

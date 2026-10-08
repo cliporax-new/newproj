@@ -52,10 +52,14 @@
           Paste Accounts (Format: <code>username:password:2FA_SECRET</code>)
         </label>
         <textarea id="bulkAccountsText" class="bulk-textarea" placeholder="user1:pass1:JBSWY3DPEHPK3PXP&#10;user2:pass2:4N6F5N2L6K5M4J3H&#10;user3 pass3 2FA_KEY_HERE&#10;&#10;Paste accounts (one per line)..."></textarea>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin: 8px 0 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 8px 0 10px; flex-wrap: wrap; gap: 10px;">
           <label style="font-size: 12px; color: #cbd5e1; display: flex; align-items: center; gap: 6px; cursor: pointer;">
             <input type="checkbox" id="bulkShowBrowser" checked style="width: 16px; height: 16px; accent-color: var(--accent);" />
-            <span>🖥️ <strong>Show Browser Window</strong> (Watch Chromium login live on screen)</span>
+            <span>🖥️ <strong>Show Browser Window</strong> (Watch login live)</span>
+          </label>
+          <label style="font-size: 12px; color: #cbd5e1; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" id="bulkUseProxy" checked style="width: 16px; height: 16px; accent-color: var(--accent);" />
+            <span>📱 <strong>Use Mobile Proxy</strong> (Uncheck on local PC / Wi-Fi)</span>
           </label>
         </div>
         <button id="startBulkLoginBtn" type="button" class="primary" style="width: 100%; padding: 12px 18px; font-weight: 700;">⚡ Start Bulk 2FA Auto-Login</button>

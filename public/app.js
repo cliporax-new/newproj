@@ -481,12 +481,13 @@ if (startBulkLoginBtn) {
 
     try {
       const showBrowser = $('#bulkShowBrowser') ? $('#bulkShowBrowser').checked : true;
+      const useProxy = $('#bulkUseProxy') ? $('#bulkUseProxy').checked : true;
 
       const data = await api('/api/accounts/bulk-auto-login', {
         method: 'POST',
         body: JSON.stringify({
           text,
-          useProxy: true,
+          useProxy,
           showBrowser,
         }),
       });
