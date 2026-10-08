@@ -40,14 +40,50 @@
         <span id="accountCount" class="count">0</span>
       </div>
 
-      <div class="add-row">
-        <input id="newUsername" autocomplete="off" placeholder="Enter Instagram username / label" />
-        <button id="loginBtn" class="primary">Open Login Window</button>
-        <button id="verifyAccountsBtn" class="secondary" style="font-weight: 600;" title="Verify live Instagram login session for all accounts">🔍 Verify All Sessions</button>
-        <button id="clearSuspendedBtn" class="danger" style="font-weight: 600;" title="Delete all suspended accounts from list">🗑️ Remove Suspended</button>
+      <!-- Navigation Tabs: Bulk 2FA vs Single Manual -->
+      <div class="acc-tabs">
+        <button id="tabBtnBulk" type="button" class="acc-tab-btn active">⚡ Bulk 2FA Auto-Login</button>
+        <button id="tabBtnManual" type="button" class="acc-tab-btn">🌐 Manual Browser Login</button>
       </div>
-      <div class="format-note">
-        🌐 <strong>Auto Dedicated Mobile Proxy:</strong> Every login window opens with an Indian mobile proxy (Reliance Jio / Airtel 4G/5G). Window stays open up to 10 minutes for OTP / 2FA / Captcha.
+
+      <!-- Tab 1: Bulk 2FA Auto-Login -->
+      <div id="tabContentBulk" class="acc-tab-content active">
+        <label class="field-label" for="bulkAccountsText" style="margin-top: 0; font-size: 12px; color: var(--muted); font-weight: 600; display: block; margin-bottom: 6px;">
+          Paste Accounts (Format: <code>username:password:2FA_SECRET</code>)
+        </label>
+        <textarea id="bulkAccountsText" class="bulk-textarea" placeholder="user1:pass1:JBSWY3DPEHPK3PXP&#10;user2:pass2:4N6F5N2L6K5M4J3H&#10;user3 pass3 2FA_KEY_HERE&#10;&#10;Paste accounts (one per line)..."></textarea>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 8px 0 10px;">
+          <label style="font-size: 12px; color: #cbd5e1; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" id="bulkShowBrowser" checked style="width: 16px; height: 16px; accent-color: var(--accent);" />
+            <span>🖥️ <strong>Show Browser Window</strong> (Watch Chromium login live on screen)</span>
+          </label>
+        </div>
+        <button id="startBulkLoginBtn" type="button" class="primary" style="width: 100%; padding: 12px 18px; font-weight: 700;">⚡ Start Bulk 2FA Auto-Login</button>
+
+        <!-- Live Bulk Progress -->
+        <div id="bulkProgressBox" class="hidden" style="margin-top: 14px; background: #090d13; border: 1px solid #1f2735; border-radius: 10px; padding: 12px;">
+          <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700;">
+            <span id="bulkProgressStatus">Logging in accounts...</span>
+            <span id="bulkProgressCounts">0 / 0</span>
+          </div>
+          <div class="progress-track" style="margin-top: 8px; height: 6px; background: #131922; border-radius: 4px; overflow: hidden;">
+            <div id="bulkProgressBar" class="progress-fill" style="width: 0%; height: 100%; background: #38bdf8; transition: width 0.3s;"></div>
+          </div>
+          <div id="bulkLogBox" class="bulk-log-box"></div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Manual Browser Login -->
+      <div id="tabContentManual" class="acc-tab-content">
+        <div class="add-row">
+          <input id="newUsername" autocomplete="off" placeholder="Enter Instagram username / label" />
+          <button id="loginBtn" class="primary">Open Login Window</button>
+          <button id="verifyAccountsBtn" class="secondary" style="font-weight: 600;" title="Verify live Instagram login session for all accounts">🔍 Verify All Sessions</button>
+          <button id="clearSuspendedBtn" class="danger" style="font-weight: 600;" title="Delete all suspended accounts from list">🗑️ Remove Suspended</button>
+        </div>
+        <div class="format-note">
+          🌐 <strong>Auto Dedicated Mobile Proxy:</strong> Every login window opens with an Indian mobile proxy (Reliance Jio / Airtel 4G/5G). Window stays open up to 10 minutes for OTP / 2FA / Captcha.
+        </div>
       </div>
 
       <div id="accounts" class="accounts"></div>

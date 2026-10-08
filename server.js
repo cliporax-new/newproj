@@ -6,6 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
 const proxyConfig = require('./proxy-config.js');
+const autoLogin = require('./auto-login.js');
 
 const PORT = Number(process.env.PORT || 4610);
 const HOST = '127.0.0.1';
@@ -1023,6 +1024,30 @@ const server = http.createServer(async (req, res) => {
       } catch (err) {
         return sendJson(res, 500, { error: err.message });
       }
+    }
+
+    // Bulk Auto-Login endpoint (username:password:2FA)
+    if (route === '/api/accounts/bulk-auto-login' && req.method === 'POST') {
+      const body = await readBody(req);
+      const rawText = String(body.text || '');
+      const parsed = autoLogin.parseBulkAccounts(rawText);
+      if (!parsed.length) {
+        return sendJson(res, 400, { ok: false, error: 'No valid accounts found. Enter format: username:password:2FA_KEY (one per line).' });
+      }
+      try {
+        const state = await autoLogin.runBulkLogin(parsed, {
+          useProxy: body.useProxy !== false,
+          showBrowser: body.showBrowser === true,
+        });
+        return sendJson(res, 202, { ok: true, count: parsed.length, state });
+      } catch (err) {
+        return sendJson(res, 400, { ok: false, error: err.message });
+      }
+    }
+
+    // Bulk Auto-Login live status
+    if (route === '/api/accounts/bulk-auto-login-status' && req.method === 'GET') {
+      return sendJson(res, 200, { ok: true, state: autoLogin.getBulkLoginState() });
     }
 
     if (route === '/api/login' && req.method === 'POST') {

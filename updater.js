@@ -29,6 +29,7 @@ const CORE_FILES = [
   'server.js',
   'comment-worker.js',
   'login-instagram.js',
+  'auto-login.js',
   'proxy-config.js',
   'smm-api.js',
   'package.json',

@@ -444,6 +444,103 @@ $('#clearSuspendedBtn')?.addEventListener('click', async () => {
   }
 });
 
+// ─── Account Pool Tabs ───
+const tabBtnBulk = $('#tabBtnBulk');
+const tabBtnManual = $('#tabBtnManual');
+const tabContentBulk = $('#tabContentBulk');
+const tabContentManual = $('#tabContentManual');
+
+if (tabBtnBulk && tabBtnManual) {
+  tabBtnBulk.addEventListener('click', () => {
+    tabBtnBulk.classList.add('active');
+    tabBtnManual.classList.remove('active');
+    tabContentBulk.classList.add('active');
+    tabContentManual.classList.remove('active');
+  });
+
+  tabBtnManual.addEventListener('click', () => {
+    tabBtnManual.classList.add('active');
+    tabBtnBulk.classList.remove('active');
+    tabContentManual.classList.add('active');
+    tabContentBulk.classList.remove('active');
+  });
+}
+
+// ─── Bulk 2FA Auto-Login ───
+const startBulkLoginBtn = $('#startBulkLoginBtn');
+let bulkPollingTimer = null;
+
+if (startBulkLoginBtn) {
+  startBulkLoginBtn.addEventListener('click', async () => {
+    const text = ($('#bulkAccountsText') ? $('#bulkAccountsText').value : '').trim();
+    if (!text) return toast('Please paste accounts in format username:password:2FA_KEY', 'error');
+
+    startBulkLoginBtn.disabled = true;
+    const progressBox = $('#bulkProgressBox');
+    if (progressBox) progressBox.classList.remove('hidden');
+
+    try {
+      const showBrowser = $('#bulkShowBrowser') ? $('#bulkShowBrowser').checked : true;
+
+      const data = await api('/api/accounts/bulk-auto-login', {
+        method: 'POST',
+        body: JSON.stringify({
+          text,
+          useProxy: true,
+          showBrowser,
+        }),
+      });
+
+      toast(`⚡ Started bulk auto-login for ${data.count} account(s)!`, 'info');
+      pollBulkLogin();
+    } catch (err) {
+      toast(err.message, 'error', 7000);
+      startBulkLoginBtn.disabled = false;
+    }
+  });
+}
+
+function pollBulkLogin() {
+  if (bulkPollingTimer) clearInterval(bulkPollingTimer);
+
+  bulkPollingTimer = setInterval(async () => {
+    try {
+      const res = await api('/api/accounts/bulk-auto-login-status');
+      const st = res.state || {};
+
+      const total = st.total || 0;
+      const processed = st.processed || 0;
+      const pct = total ? Math.min(100, Math.round((processed / total) * 100)) : 0;
+
+      if ($('#bulkProgressBar')) $('#bulkProgressBar').style.width = `${pct}%`;
+      if ($('#bulkProgressCounts')) $('#bulkProgressCounts').textContent = `${processed} / ${total} (${st.successful || 0} ok, ${st.failed || 0} failed)`;
+
+      if ($('#bulkProgressStatus')) {
+        $('#bulkProgressStatus').textContent = st.running ? '🔄 Processing bulk accounts...' : '✅ Bulk Auto-Login Completed!';
+      }
+
+      const logBox = $('#bulkLogBox');
+      if (logBox && Array.isArray(st.logs)) {
+        logBox.innerHTML = st.logs.map((l) => `
+          <div class="bulk-log-item ${escapeHtml(l.type)}">
+            <span style="color:var(--muted); margin-right:6px;">${l.time}</span>
+            <span>${escapeHtml(l.text)}</span>
+          </div>
+        `).join('');
+      }
+
+      await loadAccounts();
+
+      if (!st.running) {
+        clearInterval(bulkPollingTimer);
+        bulkPollingTimer = null;
+        if (startBulkLoginBtn) startBulkLoginBtn.disabled = false;
+        toast(`✅ Bulk login finished: ${st.successful || 0} successful, ${st.failed || 0} failed.`, 'success', 8000);
+      }
+    } catch (_) {}
+  }, 2000);
+}
+
 $('#addCommentBtn').addEventListener('click', () => addCommentRow('', 5));
 $('#postUrl').addEventListener('change', refreshReelUsage);
 $('#postUrl').addEventListener('blur', refreshReelUsage);
