@@ -1081,6 +1081,20 @@ const server = http.createServer(async (req, res) => {
       }
     }
 
+    if (route === '/api/accounts/remove-suspended' && req.method === 'POST') {
+      const all = listAccounts();
+      const removed = [];
+      for (const acc of all) {
+        if (acc.accountStatus === 'suspended') {
+          try { fs.unlinkSync(accountFile(acc.username)); } catch {}
+          try { proxyConfig.clearProxy(acc.username); } catch {}
+          accountHealthCache.delete(accountFile(acc.username));
+          removed.push(acc.username);
+        }
+      }
+      return sendJson(res, 200, { ok: true, removedCount: removed.length, removed });
+    }
+
     if (route.startsWith('/api/accounts/') && req.method === 'DELETE') {
       const username = cleanUsername(decodeURIComponent(route.slice('/api/accounts/'.length)));
       if (!username) return sendJson(res, 400, { ok: false, error: 'Missing account username.' });

@@ -429,6 +429,21 @@ $('#verifyAccountsBtn')?.addEventListener('click', async () => {
   }
 });
 
+$('#clearSuspendedBtn')?.addEventListener('click', async () => {
+  if (!confirm('Are you sure you want to remove all suspended accounts from the dashboard?')) return;
+  const btn = $('#clearSuspendedBtn');
+  btn.disabled = true;
+  try {
+    const res = await api('/api/accounts/remove-suspended', { method: 'POST' });
+    await loadAccounts();
+    toast(`Successfully removed ${res.removedCount || 0} suspended accounts.`, 'success');
+  } catch (err) {
+    toast(`Failed to remove suspended accounts: ${err.message}`, 'error');
+  } finally {
+    btn.disabled = false;
+  }
+});
+
 $('#addCommentBtn').addEventListener('click', () => addCommentRow('', 5));
 $('#postUrl').addEventListener('change', refreshReelUsage);
 $('#postUrl').addEventListener('blur', refreshReelUsage);
