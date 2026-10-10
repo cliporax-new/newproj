@@ -145,7 +145,7 @@ async function loginSingleAccount(acc, options = {}) {
   try {
     browser = await engine.launch(launchOpts);
     const contextOpts = useFirefox
-      ? { viewport: { width: 1280, height: 800 } }
+      ? { viewport: { width: 1920, height: 1080 } }
       : {
           viewport: null,
           userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
@@ -156,7 +156,16 @@ async function loginSingleAccount(acc, options = {}) {
 
     // 1. Navigate to Instagram Login
     await page.goto('https://www.instagram.com/accounts/login/', { waitUntil: 'domcontentloaded', timeout: 35000 });
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(2500);
+
+    // If Instagram shows the "tablet app" splash screen, click the "Log in" link
+    try {
+      const loginLink = page.locator('a[href*="/login"]').first();
+      if (await loginLink.isVisible({ timeout: 2000 })) {
+        await loginLink.click();
+        await page.waitForTimeout(2000);
+      }
+    } catch (e) {}
 
     // Auto-dismiss cookies prompt
     try {
@@ -344,15 +353,18 @@ async function loginSingleAccount(acc, options = {}) {
       await targetInput.fill('');
       await targetInput.fill(code);
       await page.waitForTimeout(600);
-      await targetInput.press('Enter');
 
-      // Click Confirm/Submit/Continue button if present
+      // Submit 2FA code ONLY ONCE (prevent double-submit React bug)
       try {
         const confirmBtn = page.locator('button:has-text("Confirm"), button:has-text("Submit"), button:has-text("Continue"), button:has-text("Log In"), button:has-text("Log in"), button[type="submit"]').first();
         if (await confirmBtn.isVisible({ timeout: 2000 })) {
           await confirmBtn.click().catch(() => {});
+        } else {
+          await targetInput.press('Enter');
         }
-      } catch {}
+      } catch {
+        await targetInput.press('Enter').catch(() => {});
+      }
 
       // Optional: Trust this device prompt
       try {
