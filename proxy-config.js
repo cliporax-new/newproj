@@ -11,14 +11,13 @@ const PRIVATE_DIR = path.join(ROOT, 'data', 'private');
 const FILE = path.join(PRIVATE_DIR, 'account-proxies.json');
 const ALLOWED_PROTOCOLS = new Set(['http:', 'https:', 'socks5:']);
 
-// DataImpulse Indian Mobile Proxy Credentials
+// RapidProxy Credentials
 const MOBILE_PROXY_CONFIG = {
-  host: 'gw.dataimpulse.com',
-  port: 823,
-  userBase: 'a844ed1d40c5bc2f5509',
-  country: 'cr.in',
-  pass: '2c16140c92906bea',
-  ttlMinutes: 30,
+  host: 'as.rapidproxy.io',
+  port: 5001,
+  userBase: 's4choiz-residential-IN',
+  pass: 'sachi27',
+  time: 10, // sticky 10 mins
 };
 
 function clean(value) {
@@ -33,6 +32,17 @@ function accountKey(username) {
   const user = clean(username);
   if (!user) throw new Error('Missing Instagram account username.');
   return `instagram:${user}`;
+}
+
+// Generate a numeric session ID for RapidProxy sticky sessions based on username
+function getNumericSessionId(username) {
+  let hash = 0;
+  const str = cleanUserTag(username);
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash) % 100000000;
 }
 
 let proxyCache = null; // { mtimeMs, data }
@@ -61,8 +71,8 @@ function saveAll(data) {
 }
 
 function generateIndianMobileProxy(username) {
-  const tag = cleanUserTag(username);
-  const user = `${MOBILE_PROXY_CONFIG.userBase}__${MOBILE_PROXY_CONFIG.country};sid.${tag};sessttl.${MOBILE_PROXY_CONFIG.ttlMinutes}`;
+  const sessionId = getNumericSessionId(username);
+  const user = `${MOBILE_PROXY_CONFIG.userBase}-session-${sessionId}-stime-${MOBILE_PROXY_CONFIG.time}`;
   return `http://${user}:${MOBILE_PROXY_CONFIG.pass}@${MOBILE_PROXY_CONFIG.host}:${MOBILE_PROXY_CONFIG.port}`;
 }
 
@@ -103,7 +113,11 @@ function parseProxy(rawValue) {
   const server = `${url.protocol}//${host}:${url.port}`;
 
   let label = `${url.protocol.replace(':', '')}://${url.hostname}:${url.port}`;
-  if (username && username.includes('sid.')) {
+  if (username && username.includes('session-')) {
+    const match = username.match(/session-([^;:-]+)/);
+    const sid = match ? match[1] : '';
+    label = `Mobile IP (IN · Rapid sid:${sid})`;
+  } else if (username && username.includes('sid.')) {
     const match = username.match(/sid\.([^;:]+)/);
     const sid = match ? match[1] : '';
     label = `Mobile IP (IN · sid:${sid})`;
@@ -115,7 +129,10 @@ function parseProxy(rawValue) {
 function getRawProxy(username) {
   const entry = loadAll()[accountKey(username)];
   if (entry && typeof entry.raw === 'string' && entry.raw.trim()) {
-    return entry.raw.trim();
+    // If it's old exhausted DataImpulse proxy, automatically discard and upgrade to RapidProxy!
+    if (!entry.raw.includes('dataimpulse.com')) {
+      return entry.raw.trim();
+    }
   }
   // Auto-generate and save dedicated mobile proxy for this account
   const autoProxy = generateIndianMobileProxy(username);

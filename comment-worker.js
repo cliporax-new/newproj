@@ -350,7 +350,6 @@ async function main() {
     ...(proxy ? { proxy } : {}),
     args: [
       '--start-maximized',
-      '--host-resolver-rules=MAP gw.dataimpulse.com 67.213.122.177',
       '--disable-blink-features=AutomationControlled',
     ],
   });
