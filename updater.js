@@ -37,6 +37,8 @@ const CORE_FILES = [
   'public/index.html',
   'public/styles.css',
   'data/account-ips.json',
+  'retry-failed.js',
+  'RETRY_FAILED.bat',
   'updater.js',
 ];
 

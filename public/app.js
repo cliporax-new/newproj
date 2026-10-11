@@ -801,6 +801,27 @@ document.addEventListener('click', (e) => {
   }
 });
 
+$('#retryFailedBtn')?.addEventListener('click', async () => {
+  if (!confirm('Pichhle 3 ghante ke sabhi failed comments aur SMM orders ko dobara retry karein?')) return;
+  const btn = $('#retryFailedBtn');
+  btn.disabled = true;
+  btn.style.opacity = '0.6';
+  try {
+    const res = await api('/api/jobs/retry-failed', { method: 'POST', body: { hours: 3 } });
+    if (res && res.ok) {
+      toast(res.message || 'Retry job started!', 'success');
+      await loadActivity();
+    } else {
+      toast(`Retry: ${res.error || 'No failed comments found.'}`, 'info');
+    }
+  } catch (err) {
+    toast(`Retry error: ${err.message}`, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
+});
+
 addCommentRow('', 0);
 updateAccountModeUi();
 loadAccounts().then(refreshReelUsage).catch((error) => toast(error.message, 'error'));

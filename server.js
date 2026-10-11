@@ -886,6 +886,67 @@ function createCommentJob(body) {
   return job;
 }
 
+function retryFailedComments(hours = 3) {
+  const cutoff = Date.now() - hours * 3600 * 1000;
+  const failedItems = [];
+
+  for (const job of jobs.values()) {
+    const jobTime = new Date(job.createdAt || 0).getTime();
+    if (jobTime >= cutoff) {
+      for (const item of job.items || []) {
+        if (!item.ok && !['queued', 'waiting', 'running'].includes(item.status)) {
+          failedItems.push({
+            url: item.postUrl || job.postUrl,
+            comment: item.comment,
+            originalJobId: job.id,
+          });
+        }
+      }
+    }
+  }
+
+  let smmRetried = 0;
+  try {
+    const smmModule = require('./smm-api.js');
+    if (typeof smmModule.retryFailedSmmOrders === 'function') {
+      smmRetried = smmModule.retryFailedSmmOrders(hours);
+    }
+  } catch (e) {
+    console.error('[RETRY_ENGINE] SMM retry error:', e.message);
+  }
+
+  if (!failedItems.length && smmRetried === 0) {
+    return {
+      ok: true,
+      retriedCount: 0,
+      smmRetried: 0,
+      message: `No failed comments or orders found in the last ${hours} hours.`,
+    };
+  }
+
+  let newJob = null;
+  if (failedItems.length > 0) {
+    try {
+      newJob = createCommentJob({
+        mode: 'multi',
+        lines: failedItems.map((f) => ({ url: f.url, comment: f.comment })),
+        gapMinutes: 2,
+      });
+      console.log(`[RETRY_ENGINE] Created recovery queue ${newJob.id} with ${failedItems.length} failed comments!`);
+    } catch (err) {
+      console.error('[RETRY_ENGINE] Failed to create recovery job:', err.message);
+    }
+  }
+
+  return {
+    ok: true,
+    retriedCount: failedItems.length,
+    smmRetried,
+    jobId: newJob ? newJob.id : null,
+    message: `Successfully restarted ${failedItems.length} failed comments and ${smmRetried} SMM panel orders!`,
+  };
+}
+
 function usageForTarget(postUrl) {
   const target = normalizeInstagramTarget(postUrl);
   const used = [...usedAccountsForTarget(target.targetKey)].sort();
@@ -1027,6 +1088,17 @@ const server = http.createServer(async (req, res) => {
 
     if ((route === '/api/activity' || route === '/api/comment-jobs') && req.method === 'GET') {
       return sendJson(res, 200, getActivitySummary());
+    }
+
+    if (route === '/api/jobs/retry-failed' && (req.method === 'POST' || req.method === 'GET')) {
+      const body = req.method === 'POST' ? await readBody(req) : {};
+      const hours = Number(body.hours || url.searchParams.get('hours')) || 3;
+      try {
+        const result = retryFailedComments(hours);
+        return sendJson(res, 200, result);
+      } catch (err) {
+        return sendJson(res, 500, { ok: false, error: err.message });
+      }
     }
 
     if (route === '/api/smm-info' && req.method === 'GET') {

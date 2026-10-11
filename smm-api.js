@@ -131,6 +131,38 @@ function parseComments(raw) {
   return list.map((c) => String(c || '').trim()).filter(Boolean);
 }
 
+let activeStore = null;
+let activeSchedulerTick = null;
+
+function retryFailedSmmOrders(hours = 3) {
+  const store = activeStore || readJson(ORDERS_FILE, { version: 1, nextId: 1000, orders: {} });
+  const cutoff = Date.now() - hours * 3600 * 1000;
+  let retriedCount = 0;
+  for (const order of Object.values(store.orders || {})) {
+    const orderTime = new Date(order.createdAt || 0).getTime();
+    if (orderTime >= cutoff) {
+      const posted = Number(order.posted) || 0;
+      const qty = Number(order.quantity) || 0;
+      if (order.state === 'rejected' || order.state === 'cancelled' || (order.final && posted < qty)) {
+        order.state = 'pending';
+        order.final = false;
+        order.errors = [];
+        order.waitReason = null;
+        order.jobId = null;
+        order.nextTryAt = Date.now();
+        retriedCount++;
+      }
+    }
+  }
+  if (retriedCount > 0) {
+    writeJson(ORDERS_FILE, store);
+    if (activeSchedulerTick) {
+      setTimeout(activeSchedulerTick, 500).unref();
+    }
+  }
+  return retriedCount;
+}
+
 function start(deps) {
   const { createCommentJob, runJob, jobs, listAccounts } = deps;
   const config = loadConfig();
@@ -142,6 +174,7 @@ function start(deps) {
   const store = readJson(ORDERS_FILE, { version: 1, nextId: 1000, orders: {} });
   if (!store.orders) store.orders = {};
   if (!store.nextId) store.nextId = 1000;
+  activeStore = store;
 
   let dirty = false;
   const save = () => { dirty = true; };
@@ -263,6 +296,7 @@ function start(deps) {
       order.final = true; // job record no longer available; keep last snapshot
     }
   }
+  activeSchedulerTick = tick;
   setInterval(tick, 5000).unref();
   setTimeout(tick, 1000).unref();
 
@@ -421,4 +455,4 @@ function getSmmInfo() {
   };
 }
 
-module.exports = { start, loadConfig, getSmmInfo, CONFIG_FILE };
+module.exports = { start, loadConfig, getSmmInfo, retryFailedSmmOrders, CONFIG_FILE };
