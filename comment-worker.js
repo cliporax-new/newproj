@@ -337,17 +337,11 @@ async function submitComment(page, box, text) {
   }
 }
 
-async function main() {
-  if (!username) throw new Error('Missing account username.');
-  if (!authFile || !fs.existsSync(authFile)) throw new Error('Saved account session not found.');
-  if (!commentText) throw new Error('Comment cannot be empty.');
-  if (commentText.length > 1000) throw new Error('Comment must be 1000 characters or fewer.');
-
+async function runCommentAttempt(activeProxy = null) {
   const postUrl = normalizeInstagramUrl(rawPostUrl);
-  const proxy = getPlaywrightProxy(username);
   const browser = await chromium.launch({
     headless: false,
-    ...(proxy ? { proxy } : {}),
+    ...(activeProxy ? { proxy: activeProxy } : {}),
     args: [
       '--start-maximized',
       '--disable-blink-features=AutomationControlled',
@@ -363,12 +357,12 @@ async function main() {
   page.setDefaultTimeout(15000);
 
   try {
-    // 1. Resilient navigation with retry for mobile proxies
+    // 1. Resilient navigation with retry
     let navOk = false;
     let lastNavErr = null;
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
-        console.log(`[Worker] Loading ${postUrl} (attempt ${attempt}/2)...`);
+        console.log(`[Worker] Loading ${postUrl} (attempt ${attempt}/2, proxy: ${activeProxy ? 'yes' : 'direct'})...`);
         await page.goto(postUrl, { waitUntil: 'commit', timeout: 90000 });
         navOk = true;
         break;
@@ -448,6 +442,28 @@ async function main() {
     }
   } finally {
     await browser.close().catch(() => {});
+  }
+}
+
+async function main() {
+  if (!username) throw new Error('Missing account username.');
+  if (!authFile || !fs.existsSync(authFile)) throw new Error('Saved account session not found.');
+  if (!commentText) throw new Error('Comment cannot be empty.');
+  if (commentText.length > 1000) throw new Error('Comment must be 1000 characters or fewer.');
+
+  const proxy = getPlaywrightProxy(username);
+
+  try {
+    await runCommentAttempt(proxy);
+  } catch (err) {
+    const msg = String(err && err.message || err);
+    const isProxyErr = /proxy|407|431|tunnel|ECONNREFUSED|ENOTFOUND|ETIMEDOUT|Request Header Fields Too Large|traffic limit/i.test(msg);
+    if (proxy && isProxyErr) {
+      console.log(`[PROXY_FALLBACK] Proxy unreachable/traffic limit hit (${msg}), auto-retrying @${username} via direct connection...`);
+      await runCommentAttempt(null);
+    } else {
+      throw err;
+    }
   }
 }
 
