@@ -73,9 +73,11 @@ function parseBulkAccounts(rawText) {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
-    // Delimited by : or |
-    if (line.includes(':') || line.includes('|')) {
-      const delim = line.includes(':') ? ':' : '|';
+    // Delimited by :, |, or ,
+    if (line.includes(':') || line.includes('|') || line.includes(',')) {
+      let delim = ':';
+      if (line.includes('|')) delim = '|';
+      if (line.includes(',')) delim = ',';
       const parts = line.split(delim).map((p) => p.trim());
       if (parts.length >= 2 && parts[0] && parts[1]) {
         accounts.push({

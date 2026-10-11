@@ -90,6 +90,20 @@
         </div>
       </div>
 
+      <!-- Re-Login Needed List (Auto-detected) -->
+      <div id="reloginSection" style="display: none; background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; padding: 14px; margin: 15px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <strong style="color: #fbbf24; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+            <span>🔄</span> Accounts Needing Re-Login (<span id="reloginCount">0</span>)
+          </strong>
+          <button id="copyReloginBtn" type="button" class="secondary" style="padding: 4px 12px; font-size: 12px; font-weight: 700; background: #f59e0b; color: #111; border: none; cursor: pointer; border-radius: 5px;">
+            📋 Copy All
+          </button>
+        </div>
+        <p style="font-size: 11px; color: #94a3b8; margin: 0 0 6px 0;">Ye accounts logged out ho gaye hain. Inhe copy karke Bulk 2FA mein re-login kar sakte hain.</p>
+        <textarea id="reloginList" readonly rows="3" style="width: 100%; box-sizing: border-box; font-family: monospace; font-size: 12px; background: rgba(0,0,0,0.4); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 6px; padding: 8px; resize: vertical;"></textarea>
+      </div>
+
       <div id="accounts" class="accounts"></div>
     </section>
 

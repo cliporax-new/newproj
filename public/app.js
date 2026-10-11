@@ -58,8 +58,28 @@ function formatLocation(ipInfo) {
 }
 
 function renderAccounts() {
+  // Never show suspended accounts
+  accounts = accounts.filter((a) => a.accountStatus !== 'suspended');
+
   const readyCount = accounts.filter((a) => a.healthy).length;
+  const reloginAccounts = accounts.filter((a) => !a.healthy);
+
   $('#accountCount').innerHTML = `<span style="color: #4ade80; font-weight: 700;">${readyCount} Ready</span> <span style="opacity: 0.6; font-size: 13px;">(${accounts.length} total)</span>`;
+
+  // Update Re-Login Needed Section
+  const reloginSection = $('#reloginSection');
+  if (reloginSection) {
+    if (reloginAccounts.length > 0) {
+      reloginSection.style.display = 'block';
+      const countEl = $('#reloginCount');
+      if (countEl) countEl.textContent = reloginAccounts.length;
+      const listEl = $('#reloginList');
+      if (listEl) listEl.value = reloginAccounts.map((a) => a.username).join('\n');
+    } else {
+      reloginSection.style.display = 'none';
+    }
+  }
+
   if (!accounts.length) {
     accountsEl.innerHTML = '<div class="empty-card">No Instagram accounts saved yet.</div>';
     return;
@@ -442,6 +462,20 @@ $('#clearSuspendedBtn')?.addEventListener('click', async () => {
   } finally {
     btn.disabled = false;
   }
+});
+
+$('#copyReloginBtn')?.addEventListener('click', () => {
+  const listEl = $('#reloginList');
+  const text = listEl ? listEl.value.trim() : '';
+  if (!text) return toast('No accounts to copy.', 'info');
+  navigator.clipboard.writeText(text).then(() => {
+    const count = text.split('\n').filter(Boolean).length;
+    toast(`Copied ${count} re-login account(s) to clipboard!`, 'success');
+  }).catch(() => {
+    listEl.select();
+    document.execCommand('copy');
+    toast('Copied to clipboard!', 'success');
+  });
 });
 
 // ─── Account Pool Tabs ───

@@ -1,0 +1,140 @@
+{
+  "cookies": [
+    {
+      "name": "datr",
+      "value": "eZrKaiHPJWiL4MPJc8uko7BE",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1826222716.72,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ig_did",
+      "value": "5C2CDEE4-1E72-40C8-A74B-624393CEC64E",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1823198716.72,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "mid",
+      "value": "asqaeQALAAF6P-fWDcVEng9TUZ2P",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1826222716.72,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "wd",
+      "value": "1920x1080",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1792267518,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "csrftoken",
+      "value": "rBxAQisemcPSk89zri7OAJzAgcC5XYzz",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1826222749.875,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ds_user_id",
+      "value": "24689123961",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1799438749.875,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "sessionid",
+      "value": "24689123961%3AoBxD8QtsoSMB2R%3A12%3AAYnw6MqYAjg1WOCL_i-H_8l0w_lphuWDFB8FevMn4A",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1823198749.875,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "rur",
+      "value": "LLA%2C17841424598856140%2C1792872347%3A01ff5d1fa00c4a0a9e93c30d0e4d3c55d0c5e24df4dd758490eb34da3a700476acce9e2e",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://www.instagram.com",
+      "localStorage": [
+        {
+          "name": "IGSession",
+          "value": "xg44y9:1791664549882"
+        },
+        {
+          "name": "chatd-deviceid",
+          "value": "817a48b2-7ba8-4dcc-a85b-8896d403642f"
+        },
+        {
+          "name": "pigeon_state",
+          "value": "{\"lastDeviceInfoTime\":0}"
+        },
+        {
+          "name": "falco_queue_log^$^#^#^#hmac_ttl.1791662713.AR06gA2SOxUGMRq-_cYNU35QGWMGMnqvtGYyW0Vd1Gaz53FB^$fd1076d10a2baa408",
+          "value": "{\"items\":[{\"name\":\"instagram_web_resource_transfer_size_events\",\"policy\":{\"r\":1,\"s\":1},\"time\":1791662747146,\"extra\":\"{\\\"frontend_env\\\":\\\"C3\\\",\\\"full_page_load\\\":true,\\\"module\\\":\\\"\\\",\\\"resource_type\\\":\\\"img\\\",\\\"resources_count\\\":\\\"1\\\",\\\"transfer_size\\\":\\\"150657\\\"}\",\"tags\":[1,128],\"sessionId\":\"vdc34e:h17qbs:93jmi6\",\"deviceId\":\"5C2CDEE4-1E72-40C8-A74B-624393CEC64E\",\"appVersion\":\"1.0.0\"}],\"ts\":1791662749884}"
+        },
+        {
+          "name": "hb_timestamp",
+          "value": "1791662749015"
+        },
+        {
+          "name": "caa_feta_onetap_users_migrated",
+          "value": "true"
+        },
+        {
+          "name": "banzai:last_storage_flush",
+          "value": "1791662719504"
+        },
+        {
+          "name": "signal_flush_timestamp",
+          "value": "1791662719075"
+        },
+        {
+          "name": "falco_queue_critical^$^#^#^#hmac_ttl.1791662713.AR06gA2SOxUGMRq-_cYNU35QGWMGMnqvtGYyW0Vd1Gaz53FB^$fa1ea62fc0605d718",
+          "value": "{\"items\":[{\"name\":\"ods_web_batch\",\"policy\":{\"r\":1,\"s\":1},\"time\":1791662747590,\"extra\":\"{\\\"batch\\\":{\\\"7173\\\":{\\\"entities.ff_js_web.bd_pdc_signals.936619743392459.1.C3\\\":{\\\"event.logged\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.info.upload_method.banzai.log_critical\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.info.banzai.log_critical.upload_processing\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.uploaded\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.captured\\\":{\\\"n\\\":1,\\\"d\\\":null}},\\\"entities.ff_js_web.perf.936619743392459.1.C3\\\":{\\\"event.logged\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.info.upload_method.banzai.log_immediately\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.info.banzai.log_immediately.upload_processing\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.uploaded\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.captured\\\":{\\\"n\\\":1,\\\"d\\\":null}},\\\"entities.ff_js_web.instagram_web_time_spent_navigation.936619743392459.1.C3\\\":{\\\"event.logged\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.captured\\\":{\\\"n\\\":1,\\\"d\\\":null}},\\\"entities.ff_js_web.instagram_web_time_spent_bit_array.936619743392459.1.C3\\\":{\\\"event.logged\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.captured\\\":{\\\"n\\\":1,\\\"d\\\":null}},\\\"entities.ff_js_web.instagram_web_resource_transfer_size_events.936619743392459.1.C3\\\":{\\\"event.logged\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.captured\\\":{\\\"n\\\":1,\\\"d\\\":null}}}}}\",\"tags\":[1,128],\"sessionId\":\"vdc34e:h17qbs:93jmi6\",\"deviceId\":\"5C2CDEE4-1E72-40C8-A74B-624393CEC64E\",\"appVersion\":\"1.0.0\"}],\"ts\":1791662750328}"
+        },
+        {
+          "name": "Session",
+          "value": "vdc34e:1791662784882"
+        },
+        {
+          "name": "falco_queue_immediately^$^#^#^#hmac_ttl.1791662713.AR06gA2SOxUGMRq-_cYNU35QGWMGMnqvtGYyW0Vd1Gaz53FB^$fb28bfa419b7402c1",
+          "value": "{\"items\":[{\"name\":\"instagram_web_time_spent_navigation\",\"policy\":{\"r\":1},\"time\":1791662747145,\"extra\":\"{\\\"ig_userid\\\":\\\"0\\\",\\\"pk\\\":\\\"0\\\",\\\"rollout_hash\\\":\\\"1049960610\\\",\\\"original_referrer\\\":null,\\\"original_referrer_domain\\\":\\\"\\\",\\\"referrer\\\":\\\"/accounts/login/\\\",\\\"referrer_domain\\\":\\\"www.instagram.com\\\",\\\"referrer_url\\\":\\\"https://www.instagram.com/accounts/login/\\\",\\\"url\\\":\\\"/accounts/login/two_step_verification?encrypted_context=AWRW1w9MfpSRW8SkP9z_esMVDz8n7c-PxTylpy6gtndQ_yagIraBycDLdrMXad2O91FZ9b_YWkAa4sFAb2GNLAUCDGIog1rTELzsJzipKEZY_X7kLuid5yXHUhr7Nyhtnd6vKIwIfIOQpAQB3EyCULOxhAV3t8KiSovyiUgrcZNHH3obchEpdk81IcVtVpga4p4S2vn6FkY8rCjfAPlEnrLF8DuuvcF9CXPEPwTBpSoiLwUTGVmQUMuqkMKFYC8mcjFLP7NC1j9vvVAi5oKa3bFjiOZY1ekZPlObO8btmV66tAvnPsYMuaSbpMQzs8knABP0awSKQJJCf10A3vflS1Hga1GnYPM5KKiR1RQNeqPPWXH8tl_BsAXFhq8cdoF-3wCwWOXKPRR4I4BEp0C_yp1AaxCpsMr_sNBhMxaMp8mbQr8X2BXEjz3Hz310bGjduCVCM7184e4tE_kGeI4FJii-95ptBpTGBoVvV736yVSqgvUQ5fMmbvlHXXxBm78sqHHC9nQOS1FFf0TvLMwBSyrWDcju8s3v_kt67p9F0-kCTjcYZJrArcd8AoCxVCkXIFsv1PZEFsS5CFLlPU9INrVf7xM3CNn1rqqz53IvTD1YWP7it90HOGqAeUrjbu74OlWEpFRI2_ASX6zGLlPhEHDo6SmbXOZeFm1gHvBS52O4xcvRFAB0_RYjLDD617CSnEk0HdFAErm8UUyYQbmKkhYOC3ZJ159QHIs3dXhUjiKXfttjEB-LE9X0PWtZmeJYxw5Ozf2vlsydEydwiRU8WnzHaLE3xKDcwgAnYYtSibOEgOjpCh_cey2wgzyTK5f-ShgNBKxXILrENqWTAZxGDIUGPHdWF2wQlA55Jh3kExRvW0JV48Souu7c5jmpMoLZguIG-NIjK8ba0FGWCOqthh11EuP2-pY6WIDKXtJ61o12DN-lTKXj2wbMo2eFwY-aICFuUHNvtEqPgipR7iXPA7nKQ4I7lUN_ldbwxwZmlItWnUqGb2Ty7QLkQSXLKfU-jZsWV3mphk2J9wfXTpluIFr75718LGzdZWYzx24hSt00OTQsMZ6JW66Z3Pg82aSMUHUxAoQZKd6QyBWl-uRH84IZiTF03R-rCvpau3_KN5VzBK-a49ollqY8VSbnuXMvnm-zPIpli1-0kQzX1OznjHzzaP0tC7pO33a-2PuYhNPk7-aPzRAKILeKcZ0pAnfQdepARisgzv40Alxk63OTEHhU7M5edDeFZBOAHum61bQP_3205J5h-_16MgfvMZA3AEvcqS1FnjUVmrVH_3sDzVqS0wCx4-22vJBzvSBeU_RQiDMkZcgM15poaRXNreCarnSFy4R1VoIXACUcPA33vkq-6XKP0Vchc4OeUQJ3pd8sCUpKpDRkrvk1Jv4uaJr6nvSVSe59gnxnIZy9FPTih_w_kRh6RJc8y9Ohh56DXAj1lAsUJMcRG0dusHS6iD-yYiBs_zjSSRRX6xhztXc60ShZFwcSAEhioslbEIdaQsa3lCBEEGT98LPF2fwkBpNc_GD0pA6a_pGBTISoHHpr7zTY2yojDqwpQjMuq1IVEDRS90m5xp6onESLAU1KyangIxqe_o-EGqCw6zGZknXpKocEkFlOMbVG5jSKPT6B2VYWPDokYui1znLlJ_BYVBAgxBeL&flow=two_factor_login\\\",\\\"nav_chain\\\":\\\"CAAIGLoginHomepageRoot:CAAIGLoginHomepage:1:via_cold_start,TwoStepVerificationRoot:TwoFactorPage:2:unexpected\\\",\\\"app_id\\\":\\\"936619743392459\\\",\\\"frontend_env\\\":\\\"C3\\\",\\\"client_time\\\":1791662749882,\\\"event\\\":\\\"unload\\\",\\\"extra_data\\\":{\\\"source_page_id\\\":\\\"CAAIGLoginHomepage\\\"},\\\"ig_canonical_visitation_attribution\\\":\\\"{\\\\\\\"deeplink_url\\\\\\\":\\\\\\\"https://www.instagram.com/accounts/login/\\\\\\\",\\\\\\\"referrer_url\\\\\\\":\\\\\\\"\\\\\\\"}\\\",\\\"time_spent_id\\\":\\\"93jmi6\\\",\\\"source_endpoint\\\":\\\"CAAIGLoginHomepage\\\",\\\"sid_raw\\\":\\\"vdc34e:h17qbs:93jmi6\\\"}\",\"tags\":[1,128],\"sessionId\":\"vdc34e:h17qbs:93jmi6\",\"deviceId\":\"5C2CDEE4-1E72-40C8-A74B-624393CEC64E\",\"appVersion\":\"1.0.0\"},{\"name\":\"instagram_web_time_spent_bit_array\",\"policy\":{\"r\":1},\"time\":1791662747145,\"extra\":\"{\\\"ig_userid\\\":\\\"0\\\",\\\"pk\\\":\\\"0\\\",\\\"rollout_hash\\\":\\\"1049960610\\\",\\\"original_referrer\\\":null,\\\"original_referrer_domain\\\":\\\"\\\",\\\"referrer\\\":\\\"/accounts/login/\\\",\\\"referrer_domain\\\":\\\"www.instagram.com\\\",\\\"referrer_url\\\":\\\"https://www.instagram.com/accounts/login/\\\",\\\"url\\\":\\\"/accounts/login/two_step_verification?encrypted_context=AWRW1w9MfpSRW8SkP9z_esMVDz8n7c-PxTylpy6gtndQ_yagIraBycDLdrMXad2O91FZ9b_YWkAa4sFAb2GNLAUCDGIog1rTELzsJzipKEZY_X7kLuid5yXHUhr7Nyhtnd6vKIwIfIOQpAQB3EyCULOxhAV3t8KiSovyiUgrcZNHH3obchEpdk81IcVtVpga4p4S2vn6FkY8rCjfAPlEnrLF8DuuvcF9CXPEPwTBpSoiLwUTGVmQUMuqkMKFYC8mcjFLP7NC1j9vvVAi5oKa3bFjiOZY1ekZPlObO8btmV66tAvnPsYMuaSbpMQzs8knABP0awSKQJJCf10A3vflS1Hga1GnYPM5KKiR1RQNeqPPWXH8tl_BsAXFhq8cdoF-3wCwWOXKPRR4I4BEp0C_yp1AaxCpsMr_sNBhMxaMp8mbQr8X2BXEjz3Hz310bGjduCVCM7184e4tE_kGeI4FJii-95ptBpTGBoVvV736yVSqgvUQ5fMmbvlHXXxBm78sqHHC9nQOS1FFf0TvLMwBSyrWDcju8s3v_kt67p9F0-kCTjcYZJrArcd8AoCxVCkXIFsv1PZEFsS5CFLlPU9INrVf7xM3CNn1rqqz53IvTD1YWP7it90HOGqAeUrjbu74OlWEpFRI2_ASX6zGLlPhEHDo6SmbXOZeFm1gHvBS52O4xcvRFAB0_RYjLDD617CSnEk0HdFAErm8UUyYQbmKkhYOC3ZJ159QHIs3dXhUjiKXfttjEB-LE9X0PWtZmeJYxw5Ozf2vlsydEydwiRU8WnzHaLE3xKDcwgAnYYtSibOEgOjpCh_cey2wgzyTK5f-ShgNBKxXILrENqWTAZxGDIUGPHdWF2wQlA55Jh3kExRvW0JV48Souu7c5jmpMoLZguIG-NIjK8ba0FGWCOqthh11EuP2-pY6WIDKXtJ61o12DN-lTKXj2wbMo2eFwY-aICFuUHNvtEqPgipR7iXPA7nKQ4I7lUN_ldbwxwZmlItWnUqGb2Ty7QLkQSXLKfU-jZsWV3mphk2J9wfXTpluIFr75718LGzdZWYzx24hSt00OTQsMZ6JW66Z3Pg82aSMUHUxAoQZKd6QyBWl-uRH84IZiTF03R-rCvpau3_KN5VzBK-a49ollqY8VSbnuXMvnm-zPIpli1-0kQzX1OznjHzzaP0tC7pO33a-2PuYhNPk7-aPzRAKILeKcZ0pAnfQdepARisgzv40Alxk63OTEHhU7M5edDeFZBOAHum61bQP_3205J5h-_16MgfvMZA3AEvcqS1FnjUVmrVH_3sDzVqS0wCx4-22vJBzvSBeU_RQiDMkZcgM15poaRXNreCarnSFy4R1VoIXACUcPA33vkq-6XKP0Vchc4OeUQJ3pd8sCUpKpDRkrvk1Jv4uaJr6nvSVSe59gnxnIZy9FPTih_w_kRh6RJc8y9Ohh56DXAj1lAsUJMcRG0dusHS6iD-yYiBs_zjSSRRX6xhztXc60ShZFwcSAEhioslbEIdaQsa3lCBEEGT98LPF2fwkBpNc_GD0pA6a_pGBTISoHHpr7zTY2yojDqwpQjMuq1IVEDRS90m5xp6onESLAU1KyangIxqe_o-EGqCw6zGZknXpKocEkFlOMbVG5jSKPT6B2VYWPDokYui1znLlJ_BYVBAgxBeL&flow=two_factor_login\\\",\\\"nav_chain\\\":\\\"CAAIGLoginHomepageRoot:CAAIGLoginHomepage:1:via_cold_start,TwoStepVerificationRoot:TwoFactorPage:2:unexpected\\\",\\\"app_id\\\":\\\"936619743392459\\\",\\\"frontend_env\\\":\\\"C3\\\",\\\"start_time\\\":1791662718,\\\"tos_array\\\":[121635047,0],\\\"tos_cum\\\":10,\\\"tos_id\\\":\\\"93jmi6\\\",\\\"tos_len\\\":32,\\\"tos_seq\\\":0,\\\"log_time\\\":1791662749882,\\\"sid_raw\\\":\\\"vdc34e:h17qbs:93jmi6\\\"}\",\"tags\":[1,128],\"sessionId\":\"vdc34e:h17qbs:93jmi6\",\"deviceId\":\"5C2CDEE4-1E72-40C8-A74B-624393CEC64E\",\"appVersion\":\"1.0.0\"},{\"name\":\"perf\",\"policy\":{\"r\":1,\"s\":1},\"time\":1791662747590,\"extra\":\"{\\\"marker_id\\\":516759801,\\\"action_id\\\":706,\\\"instance_id\\\":0,\\\"sample_rate\\\":1,\\\"method\\\":\\\"random_sampling\\\",\\\"duration_ns\\\":\\\"31675000000\\\",\\\"points\\\":[{\\\"name\\\":\\\"trigger_ig_web_login_homepage\\\",\\\"timeSinceStart\\\":\\\"6451\\\"}],\\\"metadata\\\":{\\\"application_analytics\\\":{\\\"time_since_qpl_module_init\\\":31856},\\\"memory_stats\\\":{\\\"total_mem\\\":null},\\\"network_stats\\\":{},\\\"sitedata_info\\\":{\\\"client_push_phase\\\":\\\"C3\\\",\\\"client_revision\\\":1049960610,\\\"server_revision\\\":1049960610},\\\"locale_info\\\":{\\\"locale\\\":\\\"en_US\\\",\\\"isRTL\\\":0}},\\\"marker_type\\\":2,\\\"flags\\\":1,\\\"annotations\\\":{\\\"from\\\":\\\"ig_web_login_homepage\\\"},\\\"tracked_for_loss\\\":true,\\\"config_type\\\":\\\"prod\\\"}\",\"tags\":[1,128],\"sessionId\":\"vdc34e:h17qbs:93jmi6\",\"deviceId\":\"5C2CDEE4-1E72-40C8-A74B-624393CEC64E\",\"appVersion\":\"1.0.0\"}],\"ts\":1791662750328}"
+        },
+        {
+          "name": "trusted_devices_storage_version",
+          "value": "{\"24689123961\":{\"machine_id\":\"asqaeQALAAF6P-fWDcVEng9TUZ2P\",\"nonce\":\"a59DERcYQb8DhQ0bXC1pDgmmCGhD4U1sxYmK2PA2G4RsZjTLyHof7101l4AlihDP\"}}"
+        }
+      ],
+      "indexedDB": []
+    }
+  ]
+}

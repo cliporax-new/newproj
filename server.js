@@ -93,7 +93,7 @@ function writeJsonAtomic(filePath, value) {
 }
 
 function cleanUsername(value) {
-  return String(value || '').trim().replace(/[^a-zA-Z0-9._-]/g, '');
+  return String(value || '').trim().replace(/[^a-zA-Z0-9._@-]/g, '');
 }
 
 function accountFile(username) {
@@ -146,9 +146,11 @@ function handleAccountFailure(username, status, reason) {
     state.invalidatedAt = new Date().toISOString();
 
     if (status === 'suspended' || status === 'session_needs_attention' || status === 'checkpoint') {
-      state.suspended = true;
-      state.invalidationReason = reason || 'Suspended by Instagram (Human verification / challenge required)';
-      console.log(`[SUSPENDED] Account @${username} was logged out and marked as SUSPENDED in UI.`);
+      try { fs.unlinkSync(file); } catch {}
+      try { proxyConfig.clearProxy(username); } catch {}
+      accountHealthCache.delete(file);
+      console.log(`[SUSPENDED_PURGED] Account @${username} was suspended/challenged by Instagram. Permanently deleted from disk.`);
+      return;
     } else {
       state.suspended = false;
       state.invalidationReason = reason || 'Session expired (Re-login needed)';
@@ -172,12 +174,16 @@ function readAccountHealth(full, stat) {
   let accountStatus = 'ready';
   try {
     const state = JSON.parse(fs.readFileSync(full, 'utf8'));
+    if (state.suspended) {
+      try { fs.unlinkSync(full); } catch {}
+      const username = path.basename(full).replace(/\.json$/, '');
+      try { proxyConfig.clearProxy(username); } catch {}
+      accountHealthCache.delete(full);
+      return null;
+    }
     const cookies = Array.isArray(state.cookies) ? state.cookies : [];
     const hasSession = cookies.some((c) => c.name === 'sessionid' && c.value);
-    if (state.suspended) {
-      healthy = false;
-      accountStatus = 'suspended';
-    } else if (state.sessionInvalidated || !hasSession) {
+    if (state.sessionInvalidated || !hasSession) {
       healthy = false;
       accountStatus = 'logged_out';
     } else {
@@ -202,12 +208,13 @@ function listAccounts() {
     let stat;
     try { stat = fs.statSync(full); } catch { continue; }
     present.add(full);
-    const { healthy, accountStatus } = readAccountHealth(full, stat);
+    const health = readAccountHealth(full, stat);
+    if (!health || health.accountStatus === 'suspended') continue;
     const proxy = proxyConfig.getProxySummary(username);
     list.push({
       username,
-      healthy,
-      accountStatus,
+      healthy: health.healthy,
+      accountStatus: health.accountStatus,
       savedAt: stat.mtime.toISOString(),
       proxyConfigured: proxy.configured,
       proxyLabel: proxy.label,
