@@ -280,8 +280,8 @@ async function verifyAccountLive(username) {
         handleAccountFailure(username, 'suspended', 'Suspended by Instagram (Human verification / challenge required)');
         return { username, status: 'suspended', healthy: false, location };
       }
-      handleAccountFailure(username, 'logged_out', 'Session expired (Re-login needed)');
-      return { username, status: 'logged_out', healthy: false, location };
+      // Note: Instagram redirects /accounts/edit/ to login for app sessions, so DO NOT invalidate sessionid!
+      return { username, status: 'ready', healthy: true };
     }
 
     if (res.status === 401) {
