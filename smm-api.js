@@ -331,7 +331,7 @@ function start(deps) {
     const keys = comments.map((c) => c.replace(/\s+/g, ' ').toLocaleLowerCase());
     if (new Set(keys).size !== keys.length) return { error: 'Duplicate comments are not allowed in one order.' };
     const ready = listAccounts().filter((a) => a.healthy).length;
-    if (qty > ready) return { error: `Not enough accounts. Max ${ready} comments per link right now.` };
+    // Don't reject the order if order quantity exceeds instant ready count; rotation & recycling handles it!
 
     const id = store.nextId++;
     store.orders[id] = {
