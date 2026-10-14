@@ -80,6 +80,13 @@ async function needsAttention(page) {
 }
 
 async function dismissCommonDialog(page) {
+  // If account picker screen shows "Continue", click it to enter home/feed
+  const continueBtn = page.locator('button:has-text("Continue"), button[type="button"]:has-text("Continue")').first();
+  if (await continueBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
+    await continueBtn.click().catch(() => {});
+    await page.waitForTimeout(2000);
+  }
+
   for (let i = 0; i < 4; i += 1) {
     const button = await firstVisible([
       page.getByRole('button', { name: /^not now$/i }),
@@ -374,6 +381,16 @@ async function runCommentAttempt(activeProxy = null) {
     }
     if (!navOk) {
       throw lastNavErr || new Error('Network timeout: Could not connect to Instagram through proxy.');
+    }
+
+    // If Instagram redirected away from post to home/picker, click continue and re-navigate
+    await page.waitForTimeout(1500);
+    await dismissCommonDialog(page);
+    if (!page.url().includes('/p/') && !page.url().includes('/reel/')) {
+      console.log(`[Worker] Page was redirected to ${page.url()}. Re-navigating to ${postUrl}...`);
+      await page.goto(postUrl, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+      await page.waitForTimeout(2000);
+      await dismissCommonDialog(page);
     }
 
     // 2. Patient page loading and account health verification
