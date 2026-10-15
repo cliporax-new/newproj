@@ -21,10 +21,16 @@ echo   ============================================
 echo     Instagram Comments Automation
 echo   ============================================
 echo.
-echo   [1/3] Checking for updates from GitHub...
+echo   [1/3] Clearing stale processes and ports (4610, 4620)...
+if exist ".git\index.lock" del /f /q ".git\index.lock" >nul 2>&1
+for /f "tokens=5" %%a in ('netstat -aon ^| findstr :4610 ^| findstr LISTENING') do taskkill /f /pid %%a >nul 2>&1
+for /f "tokens=5" %%a in ('netstat -aon ^| findstr :4620 ^| findstr LISTENING') do taskkill /f /pid %%a >nul 2>&1
+timeout /t 1 /nobreak >nul
+
+echo   [2/3] Checking for updates and syncing accounts from GitHub...
 call node updater.js
 
-echo   [2/3] Checking Playwright browser...
+echo   [3/3] Checking Playwright browser...
 where npx >nul 2>&1
 if %errorlevel% equ 0 (
     if not exist "%LOCALAPPDATA%\ms-playwright\chromium*" (
@@ -33,12 +39,8 @@ if %errorlevel% equ 0 (
     )
 )
 
-echo   [3/3] Clearing port 4610 and port 4620...
-for /f "tokens=5" %%a in ('netstat -aon ^| findstr :4610 ^| findstr LISTENING') do taskkill /f /pid %%a >nul 2>&1
-for /f "tokens=5" %%a in ('netstat -aon ^| findstr :4620 ^| findstr LISTENING') do taskkill /f /pid %%a >nul 2>&1
-timeout /t 1 /nobreak >nul
-
-echo   Starting dashboard...
+echo.
+echo   Starting dashboard & SMM engine...
 echo   Keep this window open while you use it.
 echo.
 node server.js

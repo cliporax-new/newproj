@@ -26,6 +26,7 @@ try {
 if (!GITHUB_TOKEN) GITHUB_TOKEN = FALLBACK_TOKEN;
 
 const CORE_FILES = [
+  'START.bat',
   'server.js',
   'comment-worker.js',
   'login-instagram.js',
@@ -37,30 +38,76 @@ const CORE_FILES = [
   'public/index.html',
   'public/styles.css',
   'data/account-ips.json',
+  'data/accounts_bundle.json',
   'retry-failed.js',
   'RETRY_FAILED.bat',
   'updater.js',
 ];
 
+function unpackAccountsBundle() {
+  const bundleFile = path.join(ROOT, 'data', 'accounts_bundle.json');
+  if (!fs.existsSync(bundleFile)) return;
+  try {
+    const bundle = JSON.parse(fs.readFileSync(bundleFile, 'utf8'));
+    const accDir = path.join(ROOT, 'accounts_instagram');
+    fs.mkdirSync(accDir, { recursive: true });
+    const validNames = new Set(Object.keys(bundle));
+    let restored = 0;
+    for (const [filename, content] of Object.entries(bundle)) {
+      const dest = path.join(accDir, filename);
+      let needWrite = !fs.existsSync(dest);
+      if (!needWrite) {
+        try {
+          const existing = JSON.parse(fs.readFileSync(dest, 'utf8'));
+          const cookies = Array.isArray(existing.cookies) ? existing.cookies : [];
+          const hasSession = cookies.some((c) => c.name === 'sessionid' && c.value);
+          if (existing.suspended || existing.sessionInvalidated || !hasSession) needWrite = true;
+        } catch {
+          needWrite = true;
+        }
+      }
+      if (needWrite) {
+        fs.writeFileSync(dest, JSON.stringify(content, null, 2), 'utf8');
+        restored++;
+      }
+    }
+    const localFiles = fs.readdirSync(accDir).filter((f) => f.endsWith('.json'));
+    let purged = 0;
+    for (const file of localFiles) {
+      if (!validNames.has(file)) {
+        try { fs.unlinkSync(path.join(accDir, file)); purged++; } catch {}
+      }
+    }
+    if (restored > 0 || purged > 0) {
+      console.log(`[Bundle] Synced accounts: restored ${restored} active accounts, purged ${purged} suspended accounts.`);
+    }
+  } catch (err) {
+    console.log(`[Bundle] Unpack error: ${err.message}`);
+  }
+}
+
 async function checkGitUpdate() {
   try {
     if (fs.existsSync(path.join(ROOT, '.git'))) {
+      const lockFile = path.join(ROOT, '.git', 'index.lock');
+      if (fs.existsSync(lockFile)) {
+        try { fs.unlinkSync(lockFile); } catch {}
+      }
       execSync('git --version', { stdio: 'ignore' });
       console.log('[Updater] Checking updates via Git...');
+      const authedOrigin = `https://${GITHUB_TOKEN}@github.com/${REPO}.git`;
       try {
-        const output = execSync(`git pull origin ${BRANCH}`, { cwd: ROOT, encoding: 'utf8', timeout: 10000 });
-        if (!/already up to date/i.test(output)) {
-          console.log('[Updater] Successfully updated to latest version via Git!');
-        } else {
-          console.log('[Updater] App is already on the latest version.');
-        }
-      } catch {
-        // If git pull encounters any divergent history, cleanly sync to remote main
-        execSync(`git fetch origin ${BRANCH}`, { cwd: ROOT, encoding: 'utf8', timeout: 12000 });
-        execSync(`git reset --hard origin/${BRANCH}`, { cwd: ROOT, encoding: 'utf8', timeout: 12000 });
+        execSync(`git remote set-url origin ${authedOrigin}`, { cwd: ROOT, stdio: 'ignore' });
+      } catch {}
+      try {
+        execSync(`git fetch origin ${BRANCH} --force`, { cwd: ROOT, encoding: 'utf8', timeout: 15000 });
+        execSync(`git reset --hard origin/${BRANCH}`, { cwd: ROOT, encoding: 'utf8', timeout: 15000 });
+        execSync(`git clean -fd accounts_instagram`, { cwd: ROOT, encoding: 'utf8', timeout: 15000 });
         console.log('[Updater] Cleanly synced to latest version from GitHub!');
+        return true;
+      } catch (err) {
+        console.log(`[Updater] Git fetch/reset failed: ${err.message}. Switching to Direct Cloud Sync...`);
       }
-      return true;
     }
   } catch {}
   return false;
@@ -199,7 +246,7 @@ async function main() {
   if (!updatedViaGit) {
     await checkApiUpdate();
   }
-  // Always synchronize accounts so RDP immediately gets fresh accounts & purged lists
+  unpackAccountsBundle();
   await syncAccountsViaApi();
 }
 

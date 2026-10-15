@@ -197,10 +197,59 @@ function readAccountHealth(full, stat) {
   return entry;
 }
 
+function unpackAccountsBundle() {
+  const bundleFile = path.join(DATA_DIR, 'accounts_bundle.json');
+  if (!fs.existsSync(bundleFile)) return;
+  try {
+    const bundle = JSON.parse(fs.readFileSync(bundleFile, 'utf8'));
+    fs.mkdirSync(ACCOUNTS_DIR, { recursive: true });
+    const validNames = new Set(Object.keys(bundle));
+    let restored = 0;
+    for (const [filename, content] of Object.entries(bundle)) {
+      const dest = path.join(ACCOUNTS_DIR, filename);
+      let needWrite = !fs.existsSync(dest);
+      if (!needWrite) {
+        try {
+          const existing = JSON.parse(fs.readFileSync(dest, 'utf8'));
+          const cookies = Array.isArray(existing.cookies) ? existing.cookies : [];
+          const hasSession = cookies.some((c) => c.name === 'sessionid' && c.value);
+          if (existing.suspended || existing.sessionInvalidated || !hasSession) needWrite = true;
+        } catch {
+          needWrite = true;
+        }
+      }
+      if (needWrite) {
+        fs.writeFileSync(dest, JSON.stringify(content, null, 2), 'utf8');
+        restored++;
+      }
+    }
+    const localFiles = fs.readdirSync(ACCOUNTS_DIR).filter((f) => f.endsWith('.json'));
+    let purged = 0;
+    for (const file of localFiles) {
+      if (!validNames.has(file)) {
+        try { fs.unlinkSync(path.join(ACCOUNTS_DIR, file)); purged++; } catch {}
+      }
+    }
+    if (restored > 0 || purged > 0) {
+      accountHealthCache.clear();
+      console.log(`[Bundle] Auto-restored ${restored} accounts, purged ${purged} suspended accounts.`);
+    }
+  } catch (err) {
+    console.log(`[Bundle] Unpack error: ${err.message}`);
+  }
+}
+
+// Auto-heal accounts on boot
+try { unpackAccountsBundle(); } catch {}
+
 function listAccounts() {
   if (!fs.existsSync(ACCOUNTS_DIR)) return [];
   accountIps = readJsonFile(ACCOUNT_IPS_FILE, {});
-  const names = fs.readdirSync(ACCOUNTS_DIR).filter((name) => name.endsWith('.json'));
+  let names = fs.readdirSync(ACCOUNTS_DIR).filter((name) => name.endsWith('.json'));
+  if (names.length === 0) {
+    unpackAccountsBundle();
+    names = fs.readdirSync(ACCOUNTS_DIR).filter((name) => name.endsWith('.json'));
+  }
   const present = new Set();
   const list = [];
   for (const name of names) {

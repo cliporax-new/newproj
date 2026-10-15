@@ -410,8 +410,16 @@ async function runCommentAttempt(activeProxy = null) {
       return;
     }
     if (pageState.status === 'unavailable') {
-      result({ ok: false, account: username, status: 'post_unavailable', error: 'Instagram post is broken, deleted, or unavailable.' });
-      return;
+      const alt = postUrl.includes('/p/') ? postUrl.replace('/p/', '/reel/') : postUrl.replace('/reel/', '/p/');
+      console.log(`[Worker] Post unavailable at initial URL. Trying alternate URL: ${alt}`);
+      await page.goto(alt, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+      await page.waitForTimeout(2000);
+      await dismissCommonDialog(page);
+      const retryState = await waitForPostPageReady(page, 20000);
+      if (retryState.status === 'unavailable') {
+        result({ ok: false, account: username, status: 'post_unavailable', error: 'Instagram post is broken, deleted, or unavailable.' });
+        return;
+      }
     }
     if (pageState.status === 'comments_disabled') {
       result({ ok: false, account: username, status: 'comments_disabled', error: 'Comments are turned off or limited on this post.' });
@@ -429,7 +437,23 @@ async function runCommentAttempt(activeProxy = null) {
     }
 
     // 3. Find comment box
-    const box = await findCommentBox(page);
+    let box = await findCommentBox(page);
+    if (!box && postUrl.includes('/p/')) {
+      const altReel = postUrl.replace('/p/', '/reel/');
+      console.log(`[Worker] Box not found on /p/ URL. Retrying as /reel/: ${altReel}`);
+      await page.goto(altReel, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+      await page.waitForTimeout(2500);
+      await dismissCommonDialog(page);
+      box = await findCommentBox(page);
+    }
+    if (!box && postUrl.includes('/reel/')) {
+      const altP = postUrl.replace('/reel/', '/p/');
+      console.log(`[Worker] Box not found on /reel/ URL. Retrying as /p/: ${altP}`);
+      await page.goto(altP, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+      await page.waitForTimeout(2500);
+      await dismissCommonDialog(page);
+      box = await findCommentBox(page);
+    }
     if (!box) {
       const dir = path.join(artifactsRoot, username);
       fs.mkdirSync(dir, { recursive: true });
