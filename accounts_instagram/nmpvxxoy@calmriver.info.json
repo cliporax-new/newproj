@@ -1,0 +1,124 @@
+{
+  "cookies": [
+    {
+      "name": "datr",
+      "value": "GcHNavFLtyshPzOzESKqvL8n",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1826429210.909937,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ig_did",
+      "value": "4965401E-832B-4F93-8765-DC25F2DD3FE5",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1823405210.910009,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "mid",
+      "value": "as3BGQALAAHs5KILSzq5tA06O53K",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1826429210.910064,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "wd",
+      "value": "1440x900",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1792474019,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "csrftoken",
+      "value": "6T6uoDesSc7CXCYqLFlba7xum6gFCPHc",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1826429246.572538,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ds_user_id",
+      "value": "15217150356",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1799645246.572908,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "sessionid",
+      "value": "15217150356%3A3T5ZIukfKo1xir%3A4%3AAYmAIWz4WQrCLAZZNrXWuyDZH6oatFngAItLa3SZvg",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": 1823405246.573049,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "rur",
+      "value": "CCO%2C17841415310692143%2C1793079697%3A01ff43d9aa6ba4c2a0d2053b2edabf19cd1ad69ef40ad078bc3a9d3af65528391f65a108",
+      "domain": ".instagram.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://www.instagram.com",
+      "localStorage": [
+        {
+          "name": "chatd-deviceid",
+          "value": "3c4224b6-566c-4639-8058-f47cd87027aa"
+        },
+        {
+          "name": "trusted_devices_storage_version",
+          "value": "{\"15217150356\":{\"machine_id\":\"as3BGQALAAHs5KILSzq5tA06O53K\",\"nonce\":\"ctSQWu2pfqiN0hyUT9bovKio43gpXGDV4HTu438T73SszyHQ8pnhPuYGNyWnqWwc\"}}"
+        },
+        {
+          "name": "hb_timestamp",
+          "value": "1791869221140"
+        },
+        {
+          "name": "IGSession",
+          "value": "o6ju3x:1791871908282"
+        },
+        {
+          "name": "signal_flush_timestamp",
+          "value": "1791869221273"
+        },
+        {
+          "name": "Session",
+          "value": "ucc0dn:1791870143282"
+        },
+        {
+          "name": "banzai:last_storage_flush",
+          "value": "1791869220738.2002"
+        },
+        {
+          "name": "caa_feta_onetap_users_migrated",
+          "value": "true"
+        }
+      ],
+      "indexedDB": []
+    }
+  ]
+}

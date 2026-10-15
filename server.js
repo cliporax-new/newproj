@@ -1279,12 +1279,6 @@ function openDashboard() {
 server.listen(PORT, HOST, () => {
   console.log(`Instagram Automation Server running at http://${HOST}:${PORT}`);
   openDashboard();
-  setTimeout(() => {
-    verifyAllAccountsLive().catch((e) => console.error('[VERIFY_STARTUP_ERR]', e.message));
-  }, 4000);
-  setInterval(() => {
-    verifyAllAccountsLive().catch((e) => console.error('[VERIFY_INTERVAL_ERR]', e.message));
-  }, 15 * 60 * 1000);
 });
 
 // ─── SMM Panel Provider API (isolated module, separate port) ───
