@@ -106,11 +106,12 @@ function normalizeInstagramTarget(value) {
   if (!/(^|\.)instagram\.com$/i.test(url.hostname)) throw new Error('Use an Instagram URL.');
   const match = url.pathname.match(/^\/(p|reel|reels|tv)\/([^/?#]+)/i);
   if (!match) throw new Error('Use a direct Instagram reel/post URL.');
+  const type = match[1].toLowerCase() === 'p' ? 'p' : 'reel';
   const shortcode = match[2];
   return {
     shortcode,
     targetKey: `instagram:${shortcode}`,
-    canonicalUrl: `https://www.instagram.com/p/${shortcode}/`,
+    canonicalUrl: `https://www.instagram.com/${type}/${shortcode}/`,
   };
 }
 

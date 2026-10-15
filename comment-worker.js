@@ -24,7 +24,8 @@ function normalizeInstagramUrl(value) {
   }
   const match = url.pathname.match(/^\/(p|reel|reels|tv)\/([^/]+)/i);
   if (!match) throw new Error('Use a direct Instagram post or reel URL.');
-  return `https://www.instagram.com/p/${match[2]}/`;
+  const type = match[1].toLowerCase() === 'p' ? 'p' : 'reel';
+  return `https://www.instagram.com/${type}/${match[2]}/`;
 }
 
 async function firstVisible(locators, timeout = 1500) {
