@@ -72,7 +72,7 @@ function saveAll(data) {
 
 function generateIndianMobileProxy(username) {
   const sessionId = getNumericSessionId(username);
-  const user = `${MOBILE_PROXY_CONFIG.userBase}-session-${sessionId}-stime-${MOBILE_PROXY_CONFIG.time}`;
+  const user = `${MOBILE_PROXY_CONFIG.userBase}-session-${sessionId}`;
   return `http://${user}:${MOBILE_PROXY_CONFIG.pass}@${MOBILE_PROXY_CONFIG.host}:${MOBILE_PROXY_CONFIG.port}`;
 }
 
@@ -129,8 +129,8 @@ function parseProxy(rawValue) {
 function getRawProxy(username) {
   const entry = loadAll()[accountKey(username)];
   if (entry && typeof entry.raw === 'string' && entry.raw.trim()) {
-    // If it's old exhausted DataImpulse proxy, automatically discard and upgrade to RapidProxy!
-    if (!entry.raw.includes('dataimpulse.com')) {
+    // If it's old exhausted DataImpulse proxy or bad -stime- RapidProxy format, auto-upgrade!
+    if (!entry.raw.includes('dataimpulse.com') && !entry.raw.includes('-stime-')) {
       return entry.raw.trim();
     }
   }
