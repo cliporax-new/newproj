@@ -33,8 +33,9 @@ if %errorlevel% equ 0 (
     )
 )
 
-echo   [3/3] Clearing port 4610...
+echo   [3/3] Clearing port 4610 and port 4620...
 for /f "tokens=5" %%a in ('netstat -aon ^| findstr :4610 ^| findstr LISTENING') do taskkill /f /pid %%a >nul 2>&1
+for /f "tokens=5" %%a in ('netstat -aon ^| findstr :4620 ^| findstr LISTENING') do taskkill /f /pid %%a >nul 2>&1
 timeout /t 1 /nobreak >nul
 
 echo   Starting dashboard...

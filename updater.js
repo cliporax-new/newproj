@@ -169,6 +169,23 @@ async function syncAccountsViaApi() {
         }
       }
     }
+    const validRemoteNames = new Set(items.filter((it) => it.type === 'file' && it.name.endsWith('.json')).map((it) => it.name));
+
+    // Delete accounts locally that were deleted/purged on GitHub
+    const localFiles = fs.readdirSync(accDir).filter((f) => f.endsWith('.json'));
+    let deletedCount = 0;
+    for (const localFile of localFiles) {
+      if (!validRemoteNames.has(localFile)) {
+        try {
+          fs.unlinkSync(path.join(accDir, localFile));
+          deletedCount++;
+        } catch {}
+      }
+    }
+    if (deletedCount > 0) {
+      console.log(`[Updater] Purged ${deletedCount} suspended accounts from local disk!`);
+    }
+
     if (newCount > 0) {
       console.log(`[Updater] Synced ${newCount} Instagram accounts from cloud!`);
     }
@@ -181,8 +198,9 @@ async function main() {
   const updatedViaGit = await checkGitUpdate();
   if (!updatedViaGit) {
     await checkApiUpdate();
-    await syncAccountsViaApi();
   }
+  // Always synchronize accounts so RDP immediately gets fresh accounts & purged lists
+  await syncAccountsViaApi();
 }
 
 main().catch(() => {}).finally(() => process.exit(0));
