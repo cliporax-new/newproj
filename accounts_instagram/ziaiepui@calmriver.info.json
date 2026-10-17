@@ -89,16 +89,6 @@
       "httpOnly": false,
       "secure": true,
       "sameSite": "None"
-    },
-    {
-      "name": "sessionid",
-      "value": "19488559607%3AawQAVqi22uF8rO%3A28%3AAYlV_F72zJ1Dw-5MgpJ4rQj5iGlbpqHfytSv2M1XTA",
-      "domain": ".instagram.com",
-      "path": "/",
-      "expires": 1823375810.285137,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "None"
     }
   ],
   "origins": [
@@ -148,5 +138,9 @@
       ],
       "indexedDB": []
     }
-  ]
+  ],
+  "sessionInvalidated": true,
+  "invalidatedAt": "2026-10-17T06:31:30.222Z",
+  "suspended": false,
+  "invalidationReason": "Session expired (Re-login needed)"
 }

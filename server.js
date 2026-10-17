@@ -341,8 +341,12 @@ async function verifyAccountLive(username) {
         handleAccountFailure(username, 'suspended', 'Suspended by Instagram (Human verification / challenge required)');
         return { username, status: 'suspended', healthy: false, location };
       }
-      // Note: Instagram redirects /accounts/edit/ to login for app sessions, so DO NOT invalidate sessionid!
-      return { username, status: 'ready', healthy: true };
+      if (location.includes('login') || location.includes('/accounts/login/')) {
+        handleAccountFailure(username, 'logged_out', 'Session expired (Re-login needed)');
+        return { username, status: 'logged_out', healthy: false, location };
+      }
+      handleAccountFailure(username, 'logged_out', 'Session invalid (Re-login needed)');
+      return { username, status: 'logged_out', healthy: false, location };
     }
 
     if (res.status === 401) {
@@ -380,6 +384,11 @@ async function verifyAllAccountsLive() {
   }
   return listAccounts();
 }
+
+// Auto-verify accounts health on startup
+setTimeout(() => {
+  verifyAllAccountsLive().catch(() => {});
+}, 3000);
 
 
 // ─── Account Usage, Fair Rotation & Cooldown Guards ───

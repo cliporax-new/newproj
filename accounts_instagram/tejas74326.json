@@ -91,16 +91,6 @@
       "sameSite": "None"
     },
     {
-      "name": "sessionid",
-      "value": "42588890852%3AjNqf2qu27JE7Lu%3A20%3AAYn2nLdkRTYY1mNQaVV305swhGkoOvQ5PaMt7fnKUg",
-      "domain": ".instagram.com",
-      "path": "/",
-      "expires": 1822846161.899618,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "None"
-    },
-    {
       "name": "rur",
       "value": "EAG%2C17841442565573611%2C1792519760%3A01ff01b7f6196f2b3dcbcc6055c1be602977bfb4d5a73fc1900f5ad266c069d38f64d192",
       "domain": ".instagram.com",
@@ -162,5 +152,9 @@
       ],
       "indexedDB": []
     }
-  ]
+  ],
+  "sessionInvalidated": true,
+  "invalidatedAt": "2026-10-17T06:31:27.309Z",
+  "suspended": false,
+  "invalidationReason": "Session expired (Re-login needed)"
 }

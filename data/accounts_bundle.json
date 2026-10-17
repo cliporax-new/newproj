@@ -62,16 +62,6 @@
         "sameSite": "None"
       },
       {
-        "name": "sessionid",
-        "value": "38623772493%3AzcXuFNV9OEYIlR%3A8%3AAYmMRooicS2jdXg4td0QGKDpqfNi8Uxun4ZYxEGcPw",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823197697.657,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
         "name": "rur",
         "value": "RVA%2C17841438534817971%2C1792871295%3A01ff0293db8370196825ef5cedf95dbd8dea568ab5336019709cd3f3d0aecb750d4ef157",
         "domain": ".instagram.com",
@@ -137,7 +127,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:22.819Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "autocliperofficial.json": {
     "cookies": [
@@ -220,16 +214,6 @@
         "httpOnly": true,
         "secure": true,
         "sameSite": "None"
-      },
-      {
-        "name": "sessionid",
-        "value": "27783684900%3AKXY03kIWWNDiMQ%3A14%3AAYmpjbrqpG5k35p-YvNLqPeJ5MTVyVH6gwhTAMI-Qw",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1822595407.355391,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "Lax"
       },
       {
         "name": "rur",
@@ -317,7 +301,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:23.254Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "dkdbgyno@clearbeam.pro.json": {
     "cookies": [
@@ -392,16 +380,6 @@
         "sameSite": "None"
       },
       {
-        "name": "sessionid",
-        "value": "23957631653%3AoaywhQPmLCBkj3%3A9%3AAYntT8ikTgi0QUq1u_hLdQqlvTSFjK716xFDVHFclg",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823375893.733084,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
         "name": "rur",
         "value": "CCO%2C17841423989614703%2C1793049494%3A01ff73c670e383f3615a536c9b65ef3aede3a7da12d16cb6fe91bb5fca82de71c8a68cdf",
         "domain": ".instagram.com",
@@ -467,147 +445,11 @@
         ],
         "indexedDB": []
       }
-    ]
-  },
-  "drdghbfp@calmriver.info.json": {
-    "cookies": [
-      {
-        "name": "datr",
-        "value": "jJXKatSiTJzAoJiOtguY-_w7",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1826221455.711,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
-        "name": "ig_did",
-        "value": "4D20B334-2716-45A8-A5E3-9FF9EC0B9D10",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823197455.711,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
-        "name": "mid",
-        "value": "asqVjAALAAHIgFF-xWIUe8OiIx21",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1826221455.711,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
-        "name": "wd",
-        "value": "1920x1080",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1792266257,
-        "httpOnly": false,
-        "secure": true,
-        "sameSite": "Lax"
-      },
-      {
-        "name": "csrftoken",
-        "value": "kQBVG2xID1rzNt8p9R89q0s6XD3LYPA5",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1826221491.557,
-        "httpOnly": false,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
-        "name": "ds_user_id",
-        "value": "68722224709",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1799437491.557,
-        "httpOnly": false,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
-        "name": "sessionid",
-        "value": "68722224709%3Av1qhOk4PgGuO1I%3A3%3AAYkF2AQbz5aYIAWRtrl-nh8YuyZjJUc25avt8DA8bQ",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823197491.557,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
-        "name": "rur",
-        "value": "LDC%2C17841468661280278%2C1792871089%3A01ff5351f7a3dc058e12fc435f182332130afcd3f29c36ed615e71414a883ad9494c717f",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": -1,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "Lax"
-      }
     ],
-    "origins": [
-      {
-        "origin": "https://www.instagram.com",
-        "localStorage": [
-          {
-            "name": "IGSession",
-            "value": "ikockh:1791663291565"
-          },
-          {
-            "name": "chatd-deviceid",
-            "value": "3b97257d-8dad-4d77-bc6a-247b7c1f5882"
-          },
-          {
-            "name": "pigeon_state",
-            "value": "{\"lastDeviceInfoTime\":0}"
-          },
-          {
-            "name": "falco_queue_log^$^#^#^#hmac_ttl.1791661452.AR0I2wWcO8Fi-n6HLiqqXb0-vnvoXPxrWdyrBUcd4JrDaeAM^$f5d446c301056909d",
-            "value": "{\"items\":[{\"name\":\"instagram_web_resource_transfer_size_events\",\"policy\":{\"r\":1,\"s\":1},\"time\":1791661488844,\"extra\":\"{\\\"frontend_env\\\":\\\"C3\\\",\\\"full_page_load\\\":true,\\\"module\\\":\\\"\\\",\\\"resource_type\\\":\\\"img\\\",\\\"resources_count\\\":\\\"1\\\",\\\"transfer_size\\\":\\\"150657\\\"}\",\"tags\":[1,128],\"sessionId\":\"m9v7ld:rm22nu:w2zb0t\",\"deviceId\":\"4D20B334-2716-45A8-A5E3-9FF9EC0B9D10\",\"appVersion\":\"1.0.0\"}],\"ts\":1791661491566}"
-          },
-          {
-            "name": "hb_timestamp",
-            "value": "1791661488672"
-          },
-          {
-            "name": "caa_feta_onetap_users_migrated",
-            "value": "true"
-          },
-          {
-            "name": "falco_queue_critical^$^#^#^#hmac_ttl.1791661452.AR0I2wWcO8Fi-n6HLiqqXb0-vnvoXPxrWdyrBUcd4JrDaeAM^$f598d65de2c27d8c5",
-            "value": "{\"items\":[{\"name\":\"ods_web_batch\",\"policy\":{\"r\":1,\"s\":1},\"time\":1791661489218,\"extra\":\"{\\\"batch\\\":{\\\"7173\\\":{\\\"entities.ff_js_web.bd_pdc_signals.936619743392459.1.C3\\\":{\\\"event.logged\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.info.upload_method.banzai.log_critical\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.info.banzai.log_critical.upload_processing\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.uploaded\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.captured\\\":{\\\"n\\\":1,\\\"d\\\":null}},\\\"entities.ff_js_web.perf.936619743392459.1.C3\\\":{\\\"event.logged\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.info.upload_method.banzai.log_immediately\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.info.banzai.log_immediately.upload_processing\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.uploaded\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.captured\\\":{\\\"n\\\":1,\\\"d\\\":null}},\\\"entities.ff_js_web.instagram_web_time_spent_navigation.936619743392459.1.C3\\\":{\\\"event.logged\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.captured\\\":{\\\"n\\\":1,\\\"d\\\":null}},\\\"entities.ff_js_web.instagram_web_time_spent_bit_array.936619743392459.1.C3\\\":{\\\"event.logged\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.captured\\\":{\\\"n\\\":1,\\\"d\\\":null}},\\\"entities.ff_js_web.instagram_web_resource_transfer_size_events.936619743392459.1.C3\\\":{\\\"event.logged\\\":{\\\"n\\\":1,\\\"d\\\":null},\\\"event.captured\\\":{\\\"n\\\":1,\\\"d\\\":null}}}}}\",\"tags\":[1,128],\"sessionId\":\"m9v7ld:rm22nu:w2zb0t\",\"deviceId\":\"4D20B334-2716-45A8-A5E3-9FF9EC0B9D10\",\"appVersion\":\"1.0.0\"}],\"ts\":1791661491940}"
-          },
-          {
-            "name": "banzai:last_storage_flush",
-            "value": "1791661458967"
-          },
-          {
-            "name": "signal_flush_timestamp",
-            "value": "1791661458721"
-          },
-          {
-            "name": "falco_queue_immediately^$^#^#^#hmac_ttl.1791661452.AR0I2wWcO8Fi-n6HLiqqXb0-vnvoXPxrWdyrBUcd4JrDaeAM^$fd545ff34dd90917b",
-            "value": "{\"items\":[{\"name\":\"instagram_web_time_spent_navigation\",\"policy\":{\"r\":1},\"time\":1791661488842,\"extra\":\"{\\\"ig_userid\\\":\\\"0\\\",\\\"pk\\\":\\\"0\\\",\\\"rollout_hash\\\":\\\"1049960610\\\",\\\"original_referrer\\\":null,\\\"original_referrer_domain\\\":\\\"\\\",\\\"referrer\\\":\\\"/accounts/login/\\\",\\\"referrer_domain\\\":\\\"www.instagram.com\\\",\\\"referrer_url\\\":\\\"https://www.instagram.com/accounts/login/\\\",\\\"url\\\":\\\"/accounts/login/two_step_verification?encrypted_context=AWQElWmjGdd0LKc1CQtQPRste3akzkPjU4iTOZwN9fajEzOzzzmp7menPr6buHPmNbOBRPRfEJs38gS78GgM56ZTXP-50cCdGZXWMvT5HT-tsqjuOPjDsdmDO7lf36xNLv7PQGSb5YKQLRo0DPr3x1sHpP9uKIFxnzwWpnLHa_iW11KxN-YHnkvT_n2WTY32lMDZoCC-br-vIVcioMeowa5-LIzDRwBMyeqF_UQH8PjjXiti0F955EoxjFZG1Br9yqL942EADJjZx2k0_80IQ8qKryQTk8MWIOmzB3sfAWS4xdAZVmWmYb60IOp1EdmjKGRaTeVCli6WwWBPcXES3m-pYXyUxjw9GLRhD1zVA_2Yf30wF67JgAlqTnowC4aIU5XrAzayUxkqLhXf4yIyoikMlXpf-C-Iyck3EVOKR71Sr4C_D19cM7AQPR0iwzWFdWpf4SMVfHQkdB8gM2MaOJwuLR79SZnJUrSgM_r6MqNBZm9fxEs_i2QXERbGt5LiJrl3O4rFuuWVzy8lPoDi-H07A1gKBTEUcVVdwlm6rWSB80p1vyxgDDE8hrhdx0NgmGvNCac2LTGmohfOYUQQ0Ah0SRbw-AqEJBfp0uDy90eTInmP-RksH04hRAb_c24sk3bO3jkGFu-U21lRVKROjjhKy420bxQZ3jpxthioif452XDzZ65t1XyGyLVNKsWbP4WKGQMYzDxdz_-3sdJh0QkKGqI6IAeJkbyBMWrm6XxR1-ZdjJS5sS11Pa3gFd_HamrAsyDrfMqeJIBsXcG34JY5-nq0iqZHPAI77kHQaqINnQXQ9q4LNu-nQUcLLA7Ssex5lvYSdRyEjT66rOglr7HharMWf3a-ba7mHiyxcTA1K9MoKqZ36cF7ubQtvxgMqXdkybCnHXxnNWknJEGPqLGtR5Mgwq840tcKPgPYoRO3lLBkeGKef6iHl4z8yA4f49vj26PE6LvhBktSEQp_EAMcw_DuBXm7gKxYUvE2DBbQbrd-gPcIRgPuGDGvMFaLC6yzfOO8RricifFmUuf7UjIDSZWn5h1liSHmydJQwGiPgB5NmjlqVKhDVm-lB-rpa3XJtXpXba7qCBlIKd7H1pM2xEWUzycuw-dxqS_zA3qqGSsI6V0tdQqCmlmBdpoaUdh7RZy3ddcbP4UpWmTAy6Tx7aqlu1DjM75pe-B9hCJt7bfQFTuajShgNMMOfOZVFWTTzU8VDiUJQ88WHljljfsaqYZpIIf9l1mW0Nqs_d6XKvT_2jrXlSGWhXvNE7vTY0jQu8rBjlKWlPxiGxGYqa7y_Q7xEJjIevyRdi6EBJfybECLPnCvGCEC6BqMnP1KDrdj0XoFYToZihLQTGUTeOztVgaviuMRMFUzK-9B7kKm34cHa0tB0O3VDZMuo9O3wgfjSBFSQuyweKrPp1ybZeJCMIIqp0ISFqtVhhLUJyizTyngO8CGxMys-XRQ5GLXnXO8m3JpBnKEpIi4gGLcjFnKBLjfM_s2bNZ_ekueF2KEVTMqSJCIcxxhcyvU9Mpwcyt8_NxhdD37_IbaA_JEBTyLgWvrcd3qaReJYpTGDNPAtrt5_AoDnwPM0Rfm7sA1kCrN0tMX7bq1ygMsJBuqo7jt25AVhp5mHpJVHkmmYnYD9lMkh5l5y3Sk6gc8H5X2FA&flow=two_factor_login\\\",\\\"nav_chain\\\":\\\"CAAIGLoginHomepageRoot:CAAIGLoginHomepage:1:via_cold_start,TwoStepVerificationRoot:TwoFactorPage:2:unexpected\\\",\\\"app_id\\\":\\\"936619743392459\\\",\\\"frontend_env\\\":\\\"C3\\\",\\\"client_time\\\":1791661491565,\\\"event\\\":\\\"unload\\\",\\\"extra_data\\\":{\\\"source_page_id\\\":\\\"CAAIGLoginHomepage\\\"},\\\"ig_canonical_visitation_attribution\\\":\\\"{\\\\\\\"deeplink_url\\\\\\\":\\\\\\\"https://www.instagram.com/accounts/login/\\\\\\\",\\\\\\\"referrer_url\\\\\\\":\\\\\\\"\\\\\\\"}\\\",\\\"time_spent_id\\\":\\\"w2zb0t\\\",\\\"source_endpoint\\\":\\\"CAAIGLoginHomepage\\\",\\\"sid_raw\\\":\\\"m9v7ld:rm22nu:w2zb0t\\\"}\",\"tags\":[1,128],\"sessionId\":\"m9v7ld:rm22nu:w2zb0t\",\"deviceId\":\"4D20B334-2716-45A8-A5E3-9FF9EC0B9D10\",\"appVersion\":\"1.0.0\"},{\"name\":\"instagram_web_time_spent_bit_array\",\"policy\":{\"r\":1},\"time\":1791661488843,\"extra\":\"{\\\"ig_userid\\\":\\\"0\\\",\\\"pk\\\":\\\"0\\\",\\\"rollout_hash\\\":\\\"1049960610\\\",\\\"original_referrer\\\":null,\\\"original_referrer_domain\\\":\\\"\\\",\\\"referrer\\\":\\\"/accounts/login/\\\",\\\"referrer_domain\\\":\\\"www.instagram.com\\\",\\\"referrer_url\\\":\\\"https://www.instagram.com/accounts/login/\\\",\\\"url\\\":\\\"/accounts/login/two_step_verification?encrypted_context=AWQElWmjGdd0LKc1CQtQPRste3akzkPjU4iTOZwN9fajEzOzzzmp7menPr6buHPmNbOBRPRfEJs38gS78GgM56ZTXP-50cCdGZXWMvT5HT-tsqjuOPjDsdmDO7lf36xNLv7PQGSb5YKQLRo0DPr3x1sHpP9uKIFxnzwWpnLHa_iW11KxN-YHnkvT_n2WTY32lMDZoCC-br-vIVcioMeowa5-LIzDRwBMyeqF_UQH8PjjXiti0F955EoxjFZG1Br9yqL942EADJjZx2k0_80IQ8qKryQTk8MWIOmzB3sfAWS4xdAZVmWmYb60IOp1EdmjKGRaTeVCli6WwWBPcXES3m-pYXyUxjw9GLRhD1zVA_2Yf30wF67JgAlqTnowC4aIU5XrAzayUxkqLhXf4yIyoikMlXpf-C-Iyck3EVOKR71Sr4C_D19cM7AQPR0iwzWFdWpf4SMVfHQkdB8gM2MaOJwuLR79SZnJUrSgM_r6MqNBZm9fxEs_i2QXERbGt5LiJrl3O4rFuuWVzy8lPoDi-H07A1gKBTEUcVVdwlm6rWSB80p1vyxgDDE8hrhdx0NgmGvNCac2LTGmohfOYUQQ0Ah0SRbw-AqEJBfp0uDy90eTInmP-RksH04hRAb_c24sk3bO3jkGFu-U21lRVKROjjhKy420bxQZ3jpxthioif452XDzZ65t1XyGyLVNKsWbP4WKGQMYzDxdz_-3sdJh0QkKGqI6IAeJkbyBMWrm6XxR1-ZdjJS5sS11Pa3gFd_HamrAsyDrfMqeJIBsXcG34JY5-nq0iqZHPAI77kHQaqINnQXQ9q4LNu-nQUcLLA7Ssex5lvYSdRyEjT66rOglr7HharMWf3a-ba7mHiyxcTA1K9MoKqZ36cF7ubQtvxgMqXdkybCnHXxnNWknJEGPqLGtR5Mgwq840tcKPgPYoRO3lLBkeGKef6iHl4z8yA4f49vj26PE6LvhBktSEQp_EAMcw_DuBXm7gKxYUvE2DBbQbrd-gPcIRgPuGDGvMFaLC6yzfOO8RricifFmUuf7UjIDSZWn5h1liSHmydJQwGiPgB5NmjlqVKhDVm-lB-rpa3XJtXpXba7qCBlIKd7H1pM2xEWUzycuw-dxqS_zA3qqGSsI6V0tdQqCmlmBdpoaUdh7RZy3ddcbP4UpWmTAy6Tx7aqlu1DjM75pe-B9hCJt7bfQFTuajShgNMMOfOZVFWTTzU8VDiUJQ88WHljljfsaqYZpIIf9l1mW0Nqs_d6XKvT_2jrXlSGWhXvNE7vTY0jQu8rBjlKWlPxiGxGYqa7y_Q7xEJjIevyRdi6EBJfybECLPnCvGCEC6BqMnP1KDrdj0XoFYToZihLQTGUTeOztVgaviuMRMFUzK-9B7kKm34cHa0tB0O3VDZMuo9O3wgfjSBFSQuyweKrPp1ybZeJCMIIqp0ISFqtVhhLUJyizTyngO8CGxMys-XRQ5GLXnXO8m3JpBnKEpIi4gGLcjFnKBLjfM_s2bNZ_ekueF2KEVTMqSJCIcxxhcyvU9Mpwcyt8_NxhdD37_IbaA_JEBTyLgWvrcd3qaReJYpTGDNPAtrt5_AoDnwPM0Rfm7sA1kCrN0tMX7bq1ygMsJBuqo7jt25AVhp5mHpJVHkmmYnYD9lMkh5l5y3Sk6gc8H5X2FA&flow=two_factor_login\\\",\\\"nav_chain\\\":\\\"CAAIGLoginHomepageRoot:CAAIGLoginHomepage:1:via_cold_start,TwoStepVerificationRoot:TwoFactorPage:2:unexpected\\\",\\\"app_id\\\":\\\"936619743392459\\\",\\\"frontend_env\\\":\\\"C3\\\",\\\"start_time\\\":1791661457,\\\"tos_array\\\":[209715399,0],\\\"tos_cum\\\":8,\\\"tos_id\\\":\\\"w2zb0t\\\",\\\"tos_len\\\":35,\\\"tos_seq\\\":0,\\\"log_time\\\":1791661491565,\\\"sid_raw\\\":\\\"m9v7ld:rm22nu:w2zb0t\\\"}\",\"tags\":[1,128],\"sessionId\":\"m9v7ld:rm22nu:w2zb0t\",\"deviceId\":\"4D20B334-2716-45A8-A5E3-9FF9EC0B9D10\",\"appVersion\":\"1.0.0\"},{\"name\":\"perf\",\"policy\":{\"r\":1,\"s\":1},\"time\":1791661489219,\"extra\":\"{\\\"marker_id\\\":516759801,\\\"action_id\\\":706,\\\"instance_id\\\":0,\\\"sample_rate\\\":1,\\\"method\\\":\\\"random_sampling\\\",\\\"duration_ns\\\":\\\"33840000000\\\",\\\"points\\\":[{\\\"name\\\":\\\"trigger_ig_web_login_homepage\\\",\\\"timeSinceStart\\\":\\\"6421\\\"}],\\\"metadata\\\":{\\\"application_analytics\\\":{\\\"time_since_qpl_module_init\\\":34008},\\\"memory_stats\\\":{\\\"total_mem\\\":null},\\\"network_stats\\\":{},\\\"sitedata_info\\\":{\\\"client_push_phase\\\":\\\"C3\\\",\\\"client_revision\\\":1049960610,\\\"server_revision\\\":1049960610},\\\"locale_info\\\":{\\\"locale\\\":\\\"en_US\\\",\\\"isRTL\\\":0}},\\\"marker_type\\\":2,\\\"flags\\\":1,\\\"annotations\\\":{\\\"from\\\":\\\"ig_web_login_homepage\\\"},\\\"tracked_for_loss\\\":true,\\\"config_type\\\":\\\"prod\\\"}\",\"tags\":[1,128],\"sessionId\":\"m9v7ld:rm22nu:w2zb0t\",\"deviceId\":\"4D20B334-2716-45A8-A5E3-9FF9EC0B9D10\",\"appVersion\":\"1.0.0\"}],\"ts\":1791661491941}"
-          },
-          {
-            "name": "Session",
-            "value": "m9v7ld:1791661526565"
-          },
-          {
-            "name": "trusted_devices_storage_version",
-            "value": "{\"68722224709\":{\"machine_id\":\"asqVjAALAAHIgFF-xWIUe8OiIx21\",\"nonce\":\"BFL9U68t2ckdcEYKvSGuHxShYviVGplF1tXqk95MHcE3xtq6Fk9plPRcveXqrnRG\"}}"
-          }
-        ],
-        "indexedDB": []
-      }
-    ]
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:23.654Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "eulizutu@clearbeam.pro.json": {
     "cookies": [
@@ -680,16 +522,6 @@
         "httpOnly": false,
         "secure": true,
         "sameSite": "None"
-      },
-      {
-        "name": "sessionid",
-        "value": "18376965760%3AyNf4LpEQ5UpHfJ%3A26%3AAYkvNBN5REa2vRBi-OOKXHRe_OVOCdEIfGioKiU9MQ",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823375919.354234,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
       }
     ],
     "origins": [
@@ -739,7 +571,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:24.082Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "hldzjurx@frostypeak.info.json": {
     "cookies": [
@@ -814,16 +650,6 @@
         "sameSite": "None"
       },
       {
-        "name": "sessionid",
-        "value": "19340694669%3AVmprCAhsnXs7X3%3A29%3AAYlcfngVYKxyG87PZta_Ptvvll9ZWxIxy1b7g0LX-g",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823375893.64823,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
         "name": "rur",
         "value": "HIL%2C17841419400087586%2C1793049494%3A01ffd9800f89207ab57e85ca89d58b891d1c807f88ffc40106a267fefe793486e8e79434",
         "domain": ".instagram.com",
@@ -885,7 +711,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:24.521Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "ikhixxgv@frostypeak.info.json": {
     "cookies": [
@@ -960,16 +790,6 @@
         "sameSite": "None"
       },
       {
-        "name": "sessionid",
-        "value": "17892712037%3AvhECssZDa2S97M%3A28%3AAYlVK9s8YUh6Qlih936Y5wG95OLafrSuvtvi2s1oXA",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823375747.500477,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
         "name": "rur",
         "value": "CCO%2C17841417761126589%2C1793049348%3A01ffbca31d62d6aa422d75908ee433bd9d46607f6870540a53ec86539478b3158172e18d",
         "domain": ".instagram.com",
@@ -1031,7 +851,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:25.023Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "jjznwqjv@clearbeam.pro.json": {
     "cookies": [
@@ -1106,16 +930,6 @@
         "sameSite": "None"
       },
       {
-        "name": "sessionid",
-        "value": "15948867259%3A8x4B2qSnIXlcJt%3A8%3AAYnKSzaKrp5fU2gi3HtOcR8mxOzgir-WD68cMgOlrQ",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823375925.743615,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
         "name": "rur",
         "value": "NHA%2C17841415937783608%2C1793049526%3A01ff3d5aa0ecb4253ddd4240e5d96796cb8cc0e9a7154d47cda02cc385f151389adf0920",
         "domain": ".instagram.com",
@@ -1177,7 +991,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:25.472Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "lcgdpzhe@frostypeak.info.json": {
     "cookies": [
@@ -1238,16 +1056,6 @@
         "path": "/",
         "expires": 1799645245.545314,
         "httpOnly": false,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
-        "name": "sessionid",
-        "value": "57913444453%3ATxIgzYtEyJFxAF%3A11%3AAYkGL-6e_lykNOHDm5xWSh6T3yj17VjzUcQGKxMmIg",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823405245.545371,
-        "httpOnly": true,
         "secure": true,
         "sameSite": "None"
       },
@@ -1317,7 +1125,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:25.745Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "nezgupsk@calmriver.info.json": {
     "cookies": [
@@ -1400,16 +1212,6 @@
         "httpOnly": false,
         "secure": true,
         "sameSite": "None"
-      },
-      {
-        "name": "sessionid",
-        "value": "64140998871%3A9TKc5DxOwl8wER%3A1%3AAYn_uQ1Cnuyf-UncDci0TtkYgBgc7W787vWDos03Cw",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823197829.485,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
       }
     ],
     "origins": [
@@ -1467,7 +1269,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:26.122Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "oglupxbr@calmriver.info.json": {
     "cookies": [
@@ -1542,16 +1348,6 @@
         "sameSite": "None"
       },
       {
-        "name": "sessionid",
-        "value": "18857701051%3AlqlDEPfjDlwRYy%3A14%3AAYkLzq7b7UIt7WLmaNk-aAnnSJPe5ZuZv_sSPVn9Dw",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823375846.970649,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
         "name": "rur",
         "value": "HIL%2C17841418871547212%2C1793049447%3A01fff30bde304607ec3efc517bd89a9da422a2428120b7d34442ec242d6d582937c13f9b",
         "domain": ".instagram.com",
@@ -1613,7 +1409,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:26.534Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "tahdbwsw@calmriver.info.json": {
     "cookies": [
@@ -1674,16 +1474,6 @@
         "path": "/",
         "expires": 1799645403.670034,
         "httpOnly": false,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
-        "name": "sessionid",
-        "value": "14971472944%3A5MZnwaTSEIeGtS%3A26%3AAYlR3tyTH0hq4o3dVkO5__2jH9SuY3WSKU-JJVH_6w",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823405400.821813,
-        "httpOnly": true,
         "secure": true,
         "sameSite": "None"
       },
@@ -1769,7 +1559,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:26.902Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "tejas74326.json": {
     "cookies": [
@@ -1864,16 +1658,6 @@
         "sameSite": "None"
       },
       {
-        "name": "sessionid",
-        "value": "42588890852%3AjNqf2qu27JE7Lu%3A20%3AAYn2nLdkRTYY1mNQaVV305swhGkoOvQ5PaMt7fnKUg",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1822846161.899618,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
         "name": "rur",
         "value": "EAG%2C17841442565573611%2C1792519760%3A01ff01b7f6196f2b3dcbcc6055c1be602977bfb4d5a73fc1900f5ad266c069d38f64d192",
         "domain": ".instagram.com",
@@ -1935,7 +1719,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:27.309Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "tpuclciw@frostypeak.info.json": {
     "cookies": [
@@ -1998,16 +1786,6 @@
         "httpOnly": false,
         "secure": true,
         "sameSite": "None"
-      },
-      {
-        "name": "sessionid",
-        "value": "61031544850%3AtBiHj9kwN2f8nJ%3A16%3AAYnTJV5KVMpAhA7BnCvnhJub6fPI-mQDzuJofCpLMQ",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823405436.121734,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
       }
     ],
     "origins": [
@@ -2057,7 +1835,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:27.708Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "uvdghxvt@clearbeam.pro.json": {
     "cookies": [
@@ -2128,16 +1910,6 @@
         "path": "/",
         "expires": 1799615861.535404,
         "httpOnly": false,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
-        "name": "sessionid",
-        "value": "72058719615%3AnJtTIhYmvjYEFb%3A9%3AAYnbjYuKnr5bFJAUH8u_UlKwZemn95dAcM8tqK4OYg",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823375861.535466,
-        "httpOnly": true,
         "secure": true,
         "sameSite": "None"
       },
@@ -2223,7 +1995,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:28.123Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "vmunfnnj@clearbeam.pro.json": {
     "cookies": [
@@ -2298,16 +2074,6 @@
         "sameSite": "None"
       },
       {
-        "name": "sessionid",
-        "value": "59778095452%3AWOg1GacT3XRQ1t%3A28%3AAYkik6wV21_Pgs5PEaZWg0Urj7y9zl_t0Kgxcqkz5A",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823375814.382337,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
         "name": "rur",
         "value": "HIL%2C17841459983562261%2C1793049415%3A01ff3779a4f455a4a511c3b9731be71c8d1e998afb84a042731c4c49de02cdf5a112b838",
         "domain": ".instagram.com",
@@ -2369,7 +2135,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:28.518Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "wrfoyhtx@frostypeak.info.json": {
     "cookies": [
@@ -2444,16 +2214,6 @@
         "sameSite": "None"
       },
       {
-        "name": "sessionid",
-        "value": "15214886215%3AJWyHcsliAAjRoe%3A3%3AAYmarETL8o5AkdHLV99hgs-IEiKh5P03zd38ifnMCg",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823375820.101332,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
         "name": "rur",
         "value": "CCO%2C17841415306461860%2C1793049421%3A01fff189fae91567a5fe1b232921d6f18d368462d340d46e3137383798c749caa0246f46",
         "domain": ".instagram.com",
@@ -2519,7 +2279,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:28.912Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "xfkqvdow@frostypeak.info.json": {
     "cookies": [
@@ -2594,16 +2358,6 @@
         "sameSite": "None"
       },
       {
-        "name": "sessionid",
-        "value": "18510379786%3ACeUo7zCcWFoS3Y%3A11%3AAYn88zW_WW-VYMFllaP8g5DxNL1hM94_YdKinretSw",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823375780.588161,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
-      },
-      {
         "name": "rur",
         "value": "HIL%2C17841418593583797%2C1793049381%3A01ffd7eec489904938512ae037ed5a8da08de2b9c62e0bad1cbf66eec3da151ea50d49ec",
         "domain": ".instagram.com",
@@ -2669,7 +2423,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:29.357Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "ziaiepui@calmriver.info.json": {
     "cookies": [
@@ -2762,16 +2520,6 @@
         "httpOnly": false,
         "secure": true,
         "sameSite": "None"
-      },
-      {
-        "name": "sessionid",
-        "value": "19488559607%3AawQAVqi22uF8rO%3A28%3AAYlV_F72zJ1Dw-5MgpJ4rQj5iGlbpqHfytSv2M1XTA",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823375810.285137,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "None"
       }
     ],
     "origins": [
@@ -2821,7 +2569,11 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:30.222Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   },
   "zptthmiz@frostypeak.info.json": {
     "cookies": [
@@ -2894,16 +2646,6 @@
         "httpOnly": false,
         "secure": true,
         "sameSite": "None"
-      },
-      {
-        "name": "sessionid",
-        "value": "61686624521%3AOlxQs729W2t7UJ%3A28%3AAYneYfWnJy_om_HMLK0bUKzKvvfRoFtouCkoCt8ptQ",
-        "domain": ".instagram.com",
-        "path": "/",
-        "expires": 1823405383.716377,
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "Lax"
       }
     ],
     "origins": [
@@ -2953,6 +2695,10 @@
         ],
         "indexedDB": []
       }
-    ]
+    ],
+    "sessionInvalidated": true,
+    "invalidatedAt": "2026-10-17T06:31:30.726Z",
+    "suspended": false,
+    "invalidationReason": "Session expired (Re-login needed)"
   }
 }
