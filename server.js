@@ -150,7 +150,18 @@ function handleAccountFailure(username, status, reason) {
       try { fs.unlinkSync(file); } catch {}
       try { proxyConfig.clearProxy(username); } catch {}
       accountHealthCache.delete(file);
-      console.log(`[SUSPENDED_PURGED] Account @${username} was suspended/challenged by Instagram. Permanently deleted from disk.`);
+      try {
+        const bundleFile = path.join(DATA_DIR, 'accounts_bundle.json');
+        if (fs.existsSync(bundleFile)) {
+          const bundle = JSON.parse(fs.readFileSync(bundleFile, 'utf8'));
+          const key = `${username}.json`;
+          if (bundle[key]) {
+            delete bundle[key];
+            writeJsonAtomic(bundleFile, bundle);
+          }
+        }
+      } catch {}
+      console.log(`[SUSPENDED_PURGED] Account @${username} was suspended/challenged by Instagram. Permanently deleted from disk and bundle.`);
       return;
     } else {
       state.suspended = false;

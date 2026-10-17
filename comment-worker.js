@@ -104,6 +104,8 @@ async function dismissCommonDialog(page) {
 
 function commentBoxLocators(page) {
   return [
+    page.locator('div[role="dialog"] textarea'),
+    page.locator('div[role="dialog"] [contenteditable="true"]'),
     page.locator('textarea[aria-label*="add a comment" i]'),
     page.locator('textarea[placeholder*="add a comment" i]'),
     page.locator('textarea[aria-label*="comment" i]'),
@@ -113,6 +115,7 @@ function commentBoxLocators(page) {
     page.locator('input[aria-label*="comment" i]'),
     page.locator('[contenteditable="true"][role="textbox"][aria-label*="comment" i]'),
     page.locator('[contenteditable="true"][role="textbox"]'),
+    page.locator('[role="textbox"]'),
     page.locator('form textarea'),
     page.locator('form [contenteditable="true"]'),
     page.locator('form input[type="text"]'),
@@ -139,22 +142,26 @@ async function tryCommentBox(page, timeout = 1500) {
 }
 
 async function openCommentsPanel(page) {
+  // If comment box is already visible, comments drawer is already open!
+  if (await tryCommentBox(page, 500)) return true;
+
   const candidates = [
     page.locator('svg[aria-label="Comment"], svg[aria-label="Comments"]').first(),
     page.getByRole('button', { name: /^comments?$/i }),
     page.getByRole('button', { name: /view comments?/i }),
-    page.locator('button:has(svg[aria-label*="comment" i])'),
-    page.locator('[role="button"]:has(svg[aria-label*="comment" i])'),
-    page.getByText(/view all .* comments?/i),
-    page.getByText(/view .* comments?/i),
+    page.locator('button:has(svg[aria-label*="comment" i])').first(),
+    page.locator('[role="button"]:has(svg[aria-label*="comment" i])').first(),
+    page.getByText(/view all .* comments?/i).first(),
+    page.getByText(/view .* comments?/i).first(),
   ];
   for (const candidate of candidates) {
     try {
-      const first = candidate.first();
-      if (await first.isVisible({ timeout: 1500 })) {
-        await first.click({ timeout: 3000, force: true }).catch(() => {});
-        await page.waitForTimeout(1200);
+      if (await candidate.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await candidate.click({ timeout: 2500, force: true }).catch(() => {});
+        await page.waitForTimeout(1500);
         if (await tryCommentBox(page, 2000)) return true;
+        // Break immediately after one click to prevent rapid toggling/vibration
+        break;
       }
     } catch {}
   }
@@ -195,7 +202,7 @@ async function waitForPostPageReady(page, maxWaitMs = 60000) {
     ], 800);
 
     if (content) {
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(1500);
       return { status: 'ready' };
     }
 
@@ -205,7 +212,7 @@ async function waitForPostPageReady(page, maxWaitMs = 60000) {
 }
 
 async function findCommentBox(page) {
-  // Step 1: Patiently wait up to 35 seconds for actual post elements (past loading spinner)
+  // Step 1: Wait up to 20 seconds for actual post elements
   const postLocators = [
     page.locator('article'),
     page.locator('svg[aria-label="Comment"], svg[aria-label="Comments"]'),
@@ -213,8 +220,9 @@ async function findCommentBox(page) {
     page.locator('textarea[aria-label*="comment" i]'),
     page.locator('[contenteditable="true"][role="textbox"]'),
   ];
-  const postWaitDeadline = Date.now() + 35000;
+  const postWaitDeadline = Date.now() + 20000;
   while (Date.now() < postWaitDeadline) {
+    if (await isSuspended(page)) return null;
     let anyVisible = false;
     for (const loc of postLocators) {
       if (await loc.first().isVisible({ timeout: 400 }).catch(() => false)) {
@@ -227,22 +235,18 @@ async function findCommentBox(page) {
     await page.waitForTimeout(1000);
   }
 
-  // Step 2: Try finding comment box directly
-  let box = await tryCommentBox(page, 3000);
+  // Step 2: Try finding comment box directly without touching anything
+  let box = await tryCommentBox(page, 2500);
   if (box) return box;
 
-  // Step 3: Open comments panel/drawer if it's a reel or collapsed post
+  // Step 3: Open comments panel/drawer if it's a reel or collapsed post (clicks once)
   await openCommentsPanel(page);
 
-  // Step 4: Try finding comment box with scrolling
-  for (let i = 0; i < 10; i += 1) {
-    box = await tryCommentBox(page, 1500);
-    if (box) return box;
-    await page.mouse.wheel(0, 350).catch(() => {});
-    await page.waitForTimeout(800);
-  }
+  // Step 4: Try finding comment box directly after opening panel (no mouse wheel scroll!)
+  box = await tryCommentBox(page, 3000);
+  if (box) return box;
 
-  // Step 5: Fallback - try clicking comment icon explicitly
+  // Step 5: Fallback - try clicking comment icon explicitly once
   const commentIcon = await firstVisible([
     page.locator('svg[aria-label="Comment"], svg[aria-label="Comments"]'),
     page.locator('button:has(svg[aria-label*="comment" i])'),
@@ -251,7 +255,7 @@ async function findCommentBox(page) {
   if (commentIcon) {
     await commentIcon.click({ timeout: 2000, force: true }).catch(() => {});
     await page.waitForTimeout(1500);
-    box = await tryCommentBox(page, 2000);
+    box = await tryCommentBox(page, 2500);
     if (box) return box;
   }
 
@@ -384,20 +388,34 @@ async function runCommentAttempt(activeProxy = null) {
       throw lastNavErr || new Error('Network timeout: Could not connect to Instagram through proxy.');
     }
 
-    // If Instagram redirected away from post to home/picker, click continue and re-navigate
-    await page.waitForTimeout(1500);
+    // Immediate health check right after navigation
+    if (await isSuspended(page)) {
+      try { fs.unlinkSync(authFile); } catch {}
+      result({ ok: false, account: username, status: 'suspended', error: 'Instagram account is suspended / human verification challenge required.' });
+      return;
+    }
+    if (await isLoginUiVisible(page)) {
+      result({ ok: false, account: username, status: 'logged_out', error: 'Saved Instagram session is logged out. Please re-login this account.' });
+      return;
+    }
+
+    // Dismiss any standard dialogs
+    await page.waitForTimeout(1000);
     await dismissCommonDialog(page);
+
+    // If Instagram redirected away to home or account picker, re-navigate directly
     if (!page.url().includes('/p/') && !page.url().includes('/reel/')) {
       console.log(`[Worker] Page was redirected to ${page.url()}. Re-navigating to ${postUrl}...`);
       await page.goto(postUrl, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(1500);
       await dismissCommonDialog(page);
     }
 
     // 2. Patient page loading and account health verification
-    const pageState = await waitForPostPageReady(page, 60000);
+    const pageState = await waitForPostPageReady(page, 45000);
 
     if (pageState.status === 'suspended') {
+      try { fs.unlinkSync(authFile); } catch {}
       result({ ok: false, account: username, status: 'suspended', error: 'Instagram account is suspended. Human verification / challenge required.' });
       return;
     }
@@ -410,16 +428,8 @@ async function runCommentAttempt(activeProxy = null) {
       return;
     }
     if (pageState.status === 'unavailable') {
-      const alt = postUrl.includes('/p/') ? postUrl.replace('/p/', '/reel/') : postUrl.replace('/reel/', '/p/');
-      console.log(`[Worker] Post unavailable at initial URL. Trying alternate URL: ${alt}`);
-      await page.goto(alt, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
-      await page.waitForTimeout(2000);
-      await dismissCommonDialog(page);
-      const retryState = await waitForPostPageReady(page, 20000);
-      if (retryState.status === 'unavailable') {
-        result({ ok: false, account: username, status: 'post_unavailable', error: 'Instagram post is broken, deleted, or unavailable.' });
-        return;
-      }
+      result({ ok: false, account: username, status: 'post_unavailable', error: 'Instagram post is broken, deleted, or unavailable.' });
+      return;
     }
     if (pageState.status === 'comments_disabled') {
       result({ ok: false, account: username, status: 'comments_disabled', error: 'Comments are turned off or limited on this post.' });
@@ -428,6 +438,7 @@ async function runCommentAttempt(activeProxy = null) {
 
     // Double check session cookies and login state
     if (await isSuspended(page)) {
+      try { fs.unlinkSync(authFile); } catch {}
       result({ ok: false, account: username, status: 'suspended', error: 'Instagram account is suspended. Human verification / challenge required.' });
       return;
     }
@@ -436,24 +447,8 @@ async function runCommentAttempt(activeProxy = null) {
       return;
     }
 
-    // 3. Find comment box
+    // 3. Find comment box directly on the exact requested URL (NEVER rewrite /reel/ to /p/!)
     let box = await findCommentBox(page);
-    if (!box && postUrl.includes('/p/')) {
-      const altReel = postUrl.replace('/p/', '/reel/');
-      console.log(`[Worker] Box not found on /p/ URL. Retrying as /reel/: ${altReel}`);
-      await page.goto(altReel, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
-      await page.waitForTimeout(2500);
-      await dismissCommonDialog(page);
-      box = await findCommentBox(page);
-    }
-    if (!box && postUrl.includes('/reel/')) {
-      const altP = postUrl.replace('/reel/', '/p/');
-      console.log(`[Worker] Box not found on /reel/ URL. Retrying as /p/: ${altP}`);
-      await page.goto(altP, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
-      await page.waitForTimeout(2500);
-      await dismissCommonDialog(page);
-      box = await findCommentBox(page);
-    }
     if (!box) {
       const dir = path.join(artifactsRoot, username);
       fs.mkdirSync(dir, { recursive: true });
