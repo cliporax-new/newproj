@@ -45,13 +45,29 @@ async function hasSessionCookie(context) {
 
 async function isLoginUiVisible(page) {
   const url = page.url();
-  if (url.includes('/accounts/login')) return true;
+  if (url.includes('/accounts/login') || url.includes('/accounts/emailsignup')) return true;
   return Boolean(await firstVisible([
+    page.getByText(/never miss a post from/i),
+    page.getByText(/sign up for instagram/i),
+    page.getByText(/log in to like or comment/i),
+    page.getByText(/sign up to see photos and videos/i),
+    page.locator('a[href*="/accounts/login"]'),
+    page.locator('a[href*="/accounts/emailsignup"]'),
+    page.getByRole('button', { name: /^sign up$/i }),
     page.locator('input[name="username"]'),
     page.locator('input[name="password"]'),
     page.getByRole('heading', { name: /log in to instagram/i }),
-    page.getByText(/log in to like or comment/i),
-  ], 800));
+  ], 1200));
+}
+
+async function isUserLoggedIn(page) {
+  if (await isLoginUiVisible(page)) return false;
+  const nav = await firstVisible([
+    page.locator('svg[aria-label="Home"], svg[aria-label="Direct"], svg[aria-label="New post"]'),
+    page.locator('a[href*="/direct/inbox/"]'),
+    page.locator('nav a[href="/"]'),
+  ], 1500);
+  return Boolean(nav);
 }
 
 async function isSuspended(page) {
@@ -423,7 +439,7 @@ async function runCommentAttempt(activeProxy = null) {
       result({ ok: false, account: username, status: 'checkpoint', error: 'Instagram requires account checkpoint / security confirmation.' });
       return;
     }
-    if (pageState.status === 'logged_out' || !(await hasSessionCookie(context))) {
+    if (pageState.status === 'logged_out' || !(await hasSessionCookie(context)) || !(await isUserLoggedIn(page))) {
       result({ ok: false, account: username, status: 'logged_out', error: 'Saved Instagram session is logged out. Please re-login this account.' });
       return;
     }
